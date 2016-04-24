@@ -2,6 +2,8 @@
 using System.Collections;
 
 public class TapCtrl : MonoBehaviour {
+	public AudioCtrl _audioCtrl;
+
 	public GameObject _circle;
 	public TextMesh _tapResultText;
 	public float _BPM = 120;
@@ -21,6 +23,8 @@ public class TapCtrl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		Application.targetFrameRate = 60;
+
 		_circleScale = _circle.transform.localScale;
 	}
 	
@@ -37,6 +41,7 @@ public class TapCtrl : MonoBehaviour {
 
 	void tap() {
 		// タップのタイミングが、Timerとどれくらいずれているかを検証。近さに応じてBAD/GOOD/GREAT/EXCELLENTの4段階評価を表示する
+		_audioCtrl.PlayHat ();
 
 		// タップしたときのTimerの値を取得し、近さに応じて評価を出す
 		TIMING tapResult = getTapResult(Mathf.Abs(rate));
@@ -105,6 +110,7 @@ public class TapCtrl : MonoBehaviour {
 			float amari = timer - loop_time;
 			timer = 0;
 			timer += amari;
+			_audioCtrl.PlayKick ();
 		}
 		rate = timer / loop_time;
 		rate -= 1.0f;
