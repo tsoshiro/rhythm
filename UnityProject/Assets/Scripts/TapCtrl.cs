@@ -26,6 +26,10 @@ public class TapCtrl : MonoBehaviour {
 
 	int score = 0;
 
+	// CTRL
+	public EffectCtrl _effectCtrl;
+
+
 	// SETTINGS
 	public int SCORE_VAL_BAD 		= 50;
 	public int SCORE_VAL_GOOD 		= 100;
@@ -91,17 +95,20 @@ public class TapCtrl : MonoBehaviour {
 		case TIMING.PERFECT:
 			resultText = "PERFECT!\n" + comboCount + " COMBO!";
 			asc = (float)SCORE_VAL_PERFECT * comboCount * 1.1f;
-			addScore += Mathf.RoundToInt(asc);
+			addScore += Mathf.RoundToInt (asc);
+			_effectCtrl.showEffect ();
 			break;
 		case TIMING.EXCELLENT:
 			resultText = "EXCELLENT!\n"+comboCount+" COMBO!";
 			asc = (float)SCORE_VAL_EXCELLENT * comboCount * 1.1f;
 			addScore += Mathf.RoundToInt(asc);
+			_effectCtrl.showEffect ();
 			break;
 		case TIMING.GREAT:
 			resultText = "GREAT!\n"+comboCount+" COMBO!";
 			asc = (float)SCORE_VAL_GOOD * comboCount * 1.1f;
 			addScore += Mathf.RoundToInt(asc);
+			_effectCtrl.showEffect ();
 			break;
 		case TIMING.GOOD:
 			resultText = "GOOD!";
