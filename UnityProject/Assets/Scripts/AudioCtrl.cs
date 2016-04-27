@@ -2,6 +2,9 @@
 using System.Collections;
 
 public class AudioCtrl : MonoBehaviour {
+	public const int SE_KICK 	= 0;
+	public const int SE_HAT 	= 1;
+
 	public AudioSource[] _audioSourceArray;
 	public AudioClip[] _seArray;
 
@@ -11,17 +14,8 @@ public class AudioCtrl : MonoBehaviour {
 			_audioSourceArray [i].clip = _seArray [i];
 		}
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
-	public void PlayKick() {
-		_audioSourceArray[0].Play ();
-	}
-
-	public void PlayHat() {
-		_audioSourceArray[1].Play ();
+	public void PlaySE(int pSeNumber) {
+		_audioSourceArray[pSeNumber].Play ();
 	}
 }
