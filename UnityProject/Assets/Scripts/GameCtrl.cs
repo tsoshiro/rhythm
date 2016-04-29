@@ -44,7 +44,7 @@ public class GameCtrl : MonoBehaviour {
 
 	[Header("Cube Display Logic")]
 	float CUBE_WIDTH = 3f;
-
+	Vector3 _cubeTargetScale;
 
 	[Header("Debug Settings")]
 	public int SCORE_VAL_BAD 		= 50;
@@ -60,7 +60,8 @@ public class GameCtrl : MonoBehaviour {
 	public float DIF_VAL_PERFECT 	= 0.001f;
 		   
 	public float TARGET_CIRCLE_SCALE_AMOUNT = 0.12f;
-	public float SCALE_TIME 	= 0.1f;
+	public float TARGET_CUBE_SCALE_AMOUNT = 2f;
+	public float SCALE_TIME 	= 0.2f;
 	public float RESULT_TEXT_SCALE_AMOUNT = 0.2f;
 
 	// Use this for initialization
@@ -70,24 +71,22 @@ public class GameCtrl : MonoBehaviour {
 		// Ctrl
 		_timeCtrl.Init(this);
 
+		//COMMON
+		_movingCircleScale = _circle.transform.localScale;
+		_cubeMovingPosition = _cubeMoving.transform.position;
+		_cubeTargetScale = _cubeTarget.transform.localScale;
+
 		// DISPLAY MODE INITIALIZATION
 		if (display_mode == DISPLAY_MODE.CIRCLE) {
-			_movingCircleScale = _circle.transform.localScale;
-
-			//DISABLE
-			_cubeMoving.SetActive (false);
-			_cubeTarget.SetActive (false);
+			enableCube (false);
 		} else {
-			_cubeMovingPosition = _cubeMoving.transform.position;
-
 			//DISABLE
-			_circle.SetActive (false);
-			_targetCircle.SetActive (false);
+			enableCircle(false);
 		}
 
 		score = 0;
 	}
-		
+
 	// Update is called once per frame
 	void Update () 
 	{
@@ -110,6 +109,34 @@ public class GameCtrl : MonoBehaviour {
 		}
 	}
 
+	#region DISPLAY_MODE
+	public void setMode(DISPLAY_MODE pMode) {
+		display_mode = pMode;
+	}
+
+	public void setModeCircle() {
+		display_mode = DISPLAY_MODE.CIRCLE;
+		enableCircle (true);
+		enableCube (false);
+	}
+
+	public void setModeBar() {
+		display_mode = DISPLAY_MODE.CUBE;
+		enableCube (true);
+		enableCircle (false);
+	}
+
+	void enableCube(bool pFlg) {
+		_cubeMoving.SetActive (pFlg);
+		_cubeTarget.SetActive (pFlg);
+	}
+
+	void enableCircle(bool pFlg) {
+		_circle.SetActive (pFlg);
+		_targetCircle.SetActive (pFlg);
+	}
+	#endregion
+
 	void tap() {
 		// タップのタイミングが、Timerとどれくらいずれているかを検証。近さに応じてBAD/GOOD/GREAT/EXCELLENTの4段階評価を表示する
 
@@ -124,7 +151,12 @@ public class GameCtrl : MonoBehaviour {
 			
 		// タップ演出
 		PlaySE (AudioCtrl.SE_HAT);
-		iTween.ScaleFrom (_targetCircle, Vector3.one * TARGET_CIRCLE_SCALE_AMOUNT, SCALE_TIME); 
+		if (display_mode == DISPLAY_MODE.CIRCLE) {
+			iTween.ScaleFrom (_targetCircle, Vector3.one * TARGET_CIRCLE_SCALE_AMOUNT, SCALE_TIME); 
+		} else {
+			iTween.ScaleFrom (_cubeTarget, _cubeTargetScale * TARGET_CUBE_SCALE_AMOUNT, SCALE_TIME); 
+		}
+
 
 
 		// 評価を画面に表示する
@@ -182,6 +214,7 @@ public class GameCtrl : MonoBehaviour {
 		_circle.transform.localScale = _movingCircleScale * (rate - 1.0f);
 	}
 
+	// 数秒ごとにバーが左から右い流れていく
 	void moveCube() {
 		float rate = _timeCtrl.getGaugeRate ();
 
