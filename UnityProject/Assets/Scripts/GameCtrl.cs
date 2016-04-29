@@ -10,6 +10,18 @@ public class GameCtrl : MonoBehaviour {
 	[Header("Display Settings")]
 	public GameObject _circle;
 	public GameObject _targetCircle;
+
+	public GameObject _cubeMoving;
+	public GameObject _cubeTarget;
+	Vector3 _cubeMovingPosition;
+
+	public enum DISPLAY_MODE {
+		CIRCLE,
+		CUBE,
+	}
+	public	DISPLAY_MODE display_mode;
+
+
 	public TextMesh _tapResultText;
 	public TextMesh _ScoreText;
 
@@ -27,8 +39,11 @@ public class GameCtrl : MonoBehaviour {
 	int comboCount;
 	int score = 0;
 
-	[Header("Display Logic")]
+	[Header("Circle Display Logic")]
 	Vector3 _movingCircleScale;
+
+	[Header("Cube Display Logic")]
+	float CUBE_WIDTH = 3f;
 
 
 	[Header("Debug Settings")]
@@ -55,14 +70,37 @@ public class GameCtrl : MonoBehaviour {
 		// Ctrl
 		_timeCtrl.Init(this);
 
-		_movingCircleScale = _circle.transform.localScale;
+		// DISPLAY MODE INITIALIZATION
+		if (display_mode == DISPLAY_MODE.CIRCLE) {
+			_movingCircleScale = _circle.transform.localScale;
+
+			//DISABLE
+			_cubeMoving.SetActive (false);
+			_cubeTarget.SetActive (false);
+		} else {
+			_cubeMovingPosition = _cubeMoving.transform.position;
+
+			//DISABLE
+			_circle.SetActive (false);
+			_targetCircle.SetActive (false);
+		}
+
 		score = 0;
 	}
-
+		
 	// Update is called once per frame
 	void Update () 
 	{
-		stretchCircle ();
+		// BPMに合わせて時間を動かす
+		_timeCtrl.setLoopTimeFromBPM (_BPM);
+
+		// 表示判定
+		if (display_mode == DISPLAY_MODE.CIRCLE) {
+			stretchCircle ();
+		} else {
+			moveCube ();
+		}
+
 
 		// タップを判定する
 		if (Input.GetMouseButtonDown (0) ||
@@ -138,12 +176,23 @@ public class GameCtrl : MonoBehaviour {
 
 	// x秒ごとに円が収縮を繰り返す
 	void stretchCircle() {
-		_timeCtrl.setLoopTimeFromBPM (_BPM);
-
 		float rate = _timeCtrl.getGaugeRate ();
 
 		// 大きい→小さい　と動くようにrateを逆にする
 		_circle.transform.localScale = _movingCircleScale * (rate - 1.0f);
+	}
+
+	void moveCube() {
+		float rate = _timeCtrl.getGaugeRate ();
+
+		// 0 → 1を -3 → 3に変換し、x座標に代入
+		rate *= CUBE_WIDTH * 2;
+		rate -= CUBE_WIDTH;
+
+		Vector3 pos = _cubeMovingPosition;
+		pos.x = rate;
+
+		_cubeMoving.transform.position = pos;
 	}
 
 	// Audio
