@@ -2,18 +2,18 @@
 using System.Collections;
 
 public class GameCtrl : MonoBehaviour {
-	//Ctrl Settings
+	[Header("Control Settings")]
 	public AudioCtrl 	_audioCtrl;
 	public EffectCtrl 	_effectCtrl;
 	public TimeCtrl 	_timeCtrl;
 
-	// Display Settings
+	[Header("Display Settings")]
 	public GameObject _circle;
 	public GameObject _targetCircle;
 	public TextMesh _tapResultText;
 	public TextMesh _ScoreText;
 
-	// Game Settings
+	[Header("Game Settings")]
 	public float _BPM = 120;
 	public enum TIMING {
 		BAD,
@@ -24,17 +24,14 @@ public class GameCtrl : MonoBehaviour {
 	}
 
 	// Game Logic
-	float loop_time = 1.0f;
-	float timer = 0.0f;
-	float rate; // 割合。rate = 0.5fがドンピシャタイミング
 	int comboCount;
 	int score = 0;
 
-	// Display Logic
+	[Header("Display Logic")]
 	Vector3 _movingCircleScale;
 
 
-	// DEBUG SETTINGS
+	[Header("Debug Settings")]
 	public int SCORE_VAL_BAD 		= 50;
 	public int SCORE_VAL_GOOD 		= 100;
 	public int SCORE_VAL_GREAT  	= 200;
@@ -79,7 +76,7 @@ public class GameCtrl : MonoBehaviour {
 		// タップのタイミングが、Timerとどれくらいずれているかを検証。近さに応じてBAD/GOOD/GREAT/EXCELLENTの4段階評価を表示する
 
 		// タップしたときのTimerの値を取得し、近さに応じて評価を出す
-		TIMING tapResult = _timeCtrl.getTapResult(Mathf.Abs(rate));
+		TIMING tapResult = _timeCtrl.getTapResult();
 		// コンボかどうかをカウントする
 		if (tapResult == TIMING.EXCELLENT || tapResult == TIMING.GREAT) {
 			comboCount++;
@@ -141,10 +138,12 @@ public class GameCtrl : MonoBehaviour {
 
 	// x秒ごとに円が収縮を繰り返す
 	void stretchCircle() {
-		loop_time = _timeCtrl.getLoopTimeFromBPM (_BPM);
+		_timeCtrl.setLoopTimeFromBPM (_BPM);
 
-		rate = _timeCtrl.getGaugeRate (rate, timer, loop_time);
-		_circle.transform.localScale = _movingCircleScale * rate;
+		float rate = _timeCtrl.getGaugeRate ();
+
+		// 大きい→小さい　と動くようにrateを逆にする
+		_circle.transform.localScale = _movingCircleScale * (rate - 1.0f);
 	}
 
 	// Audio
