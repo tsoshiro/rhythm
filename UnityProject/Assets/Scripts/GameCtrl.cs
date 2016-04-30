@@ -6,6 +6,8 @@ public class GameCtrl : MonoBehaviour {
 	public AudioCtrl 	_audioCtrl;
 	public EffectCtrl 	_effectCtrl;
 	public TimeCtrl 	_timeCtrl;
+	public PlayerCtrl	_playerCtrl;
+	public EnemyCtrl	_enemyCtrl;
 
 	[Header("Display Settings")]
 	public GameObject _circle;
@@ -24,6 +26,7 @@ public class GameCtrl : MonoBehaviour {
 
 	public TextMesh _tapResultText;
 	public TextMesh _ScoreText;
+	public TextMesh _killCountLabel;
 
 	[Header("Game Settings")]
 	public float _BPM = 120;
@@ -38,6 +41,7 @@ public class GameCtrl : MonoBehaviour {
 	// Game Logic
 	int comboCount;
 	int score = 0;
+	int killCount = 0;
 
 	[Header("Circle Display Logic")]
 	Vector3 _movingCircleScale;
@@ -47,11 +51,11 @@ public class GameCtrl : MonoBehaviour {
 	Vector3 _cubeTargetScale;
 
 	[Header("Debug Settings")]
-	public int SCORE_VAL_BAD 		= 50;
-	public int SCORE_VAL_GOOD 		= 100;
-	public int SCORE_VAL_GREAT  	= 200;
-	public int SCORE_VAL_EXCELLENT 	= 300;
-	public int SCORE_VAL_PERFECT 	= 400;
+	public int SCORE_VAL_BAD 		= 10;
+	public int SCORE_VAL_GOOD 		= 30;
+	public int SCORE_VAL_GREAT  	= 100;
+	public int SCORE_VAL_EXCELLENT 	= 150;
+	public int SCORE_VAL_PERFECT 	= 300;
 		   
 		   
 	public float DIF_VAL_GOOD 		= 0.1f;
@@ -204,6 +208,21 @@ public class GameCtrl : MonoBehaviour {
 		_tapResultText.text = resultText;
 		_ScoreText.text = "SCORE\n"+score+"pt";
 		iTween.ScaleFrom (_tapResultText.gameObject, Vector3.one * RESULT_TEXT_SCALE_AMOUNT, SCALE_TIME);
+
+		// プレイヤーのPPTの値から敵に与えるダメージを算出
+		float point = (float)addScore / 100 * _playerCtrl.getPPT ();
+		sendPointToEnemy (point);
+	}
+
+	void sendPointToEnemy(float pPoint) {
+		_enemyCtrl.hitPoint (pPoint);
+	}
+		
+	public void killEnemy() {
+		killCount++;
+		_killCountLabel.text = "KILL COUNT: " + killCount;
+
+		_playerCtrl.addCoin (100);
 	}
 
 	// x秒ごとに円が収縮を繰り返す
