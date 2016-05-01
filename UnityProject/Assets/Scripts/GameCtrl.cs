@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GameCtrl : MonoBehaviour {
 	[Header("Control Settings")]
@@ -29,6 +30,13 @@ public class GameCtrl : MonoBehaviour {
 	public TextMesh _killCountLabel;
 
 	[Header("Game Settings")]
+	public GAME_MODE gameMode = GAME_MODE.PLAY;
+	public enum GAME_MODE
+	{
+		PLAY,
+		DEBUG,
+	}
+
 	public float _BPM = 120;
 	public enum TIMING {
 		BAD,
@@ -51,6 +59,14 @@ public class GameCtrl : MonoBehaviour {
 	Vector3 _cubeTargetScale;
 
 	[Header("Debug Settings")]
+	public GameObject debugControls;
+	public GameObject debugPanel;
+	public Slider	debugBPM;
+	public Slider	debugGood;
+	public Slider	debugGreat;
+	public Slider	debugExcellent;
+	public Slider 	debugPerfect;
+
 	public int SCORE_VAL_BAD 		= 10;
 	public int SCORE_VAL_GOOD 		= 30;
 	public int SCORE_VAL_GREAT  	= 100;
@@ -94,6 +110,9 @@ public class GameCtrl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
+		if (gameMode != GAME_MODE.PLAY) {
+			return;
+		}
 		// BPMに合わせて時間を動かす
 		_timeCtrl.setLoopTimeFromBPM (_BPM);
 
@@ -113,7 +132,7 @@ public class GameCtrl : MonoBehaviour {
 		}
 	}
 
-	#region DISPLAY_MODE
+	#region SETTINGS
 	public void setMode(DISPLAY_MODE pMode) {
 		display_mode = pMode;
 	}
@@ -138,6 +157,28 @@ public class GameCtrl : MonoBehaviour {
 	void enableCircle(bool pFlg) {
 		_circle.SetActive (pFlg);
 		_targetCircle.SetActive (pFlg);
+	}
+
+	public void openSettings() {
+		gameMode = GAME_MODE.DEBUG;
+		debugControls.SetActive (true);
+
+		debugBPM.value 		= _BPM;
+		debugGood.value		= DIF_VAL_GOOD;
+		debugGreat.value 	= DIF_VAL_GREAT;
+		debugExcellent.value= DIF_VAL_EXCELLENT;
+		debugPerfect.value 	= DIF_VAL_PERFECT;
+	}
+
+	public void completeSettings() {
+		_BPM				= debugBPM.value;
+		DIF_VAL_GOOD 		= debugGood.value;
+		DIF_VAL_GREAT		= debugGreat.value;
+		DIF_VAL_EXCELLENT	= debugExcellent.value;
+		DIF_VAL_PERFECT		= debugPerfect.value;
+
+		debugControls.SetActive(false);
+		gameMode = GAME_MODE.PLAY;
 	}
 	#endregion
 
@@ -214,8 +255,12 @@ public class GameCtrl : MonoBehaviour {
 		sendPointToEnemy (point);
 	}
 
+	public TextMesh _damageText;
 	void sendPointToEnemy(float pPoint) {
 		_enemyCtrl.hitPoint (pPoint);
+		_damageText.text = ""+Mathf.RoundToInt(pPoint);
+		_damageText.GetComponent<AutoFade> ().resetColor ();
+		iTween.ScaleFrom (_damageText.gameObject, Vector3.one * RESULT_TEXT_SCALE_AMOUNT, SCALE_TIME);
 	}
 		
 	public void killEnemy() {
@@ -235,7 +280,8 @@ public class GameCtrl : MonoBehaviour {
 
 	// 数秒ごとにバーが左から右い流れていく
 	void moveCube() {
-		float rate = _timeCtrl.getGaugeRate ();
+//		float rate = _timeCtrl.getGaugeRate ();
+		float rate = _timeCtrl.getRateFromTime();
 
 		// 0 → 1を -3 → 3に変換し、x座標に代入
 		rate *= CUBE_WIDTH * 2;

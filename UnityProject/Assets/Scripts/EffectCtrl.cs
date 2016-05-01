@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class EffectCtrl : MonoBehaviour {
+	public GameObject _effectContainer;
 	public GameObject _effectPref;
 
 	GameObject[] _effectArray;
@@ -14,6 +15,7 @@ public class EffectCtrl : MonoBehaviour {
 		for (int i = 0; i < effectNum; i++) {
 			GameObject go = (GameObject)Instantiate (_effectPref);
 			_effectArray [i] = go;
+			go.transform.parent = _effectContainer.transform;
 			go.SetActive (false);
 		}
 	}
