@@ -125,11 +125,20 @@ public class GameCtrl : MonoBehaviour {
 
 
 		// タップを判定する
+		#if UNITY_EDITOR
 		if (Input.GetMouseButtonDown (0) ||
 			Input.GetKeyDown(KeyCode.Space))
 		{
 			tap ();
 		}
+		#elif UNITY_IOS || UNITY_ANDROID 
+		if (Input.touchCount > 0) {
+			Touch singleTouch = Input.GetTouch (0);
+			if (singleTouch.phase == TouchPhase.Began) {
+				tap ();
+			}
+		}
+		#endif
 	}
 
 	#region SETTINGS
