@@ -61,10 +61,25 @@ public class TimeCtrl : MonoBehaviour {
 	// 時間を計測するロジック
 	// BPMから一拍の時間を算出
 	// 取得時間を計測
+	public void clockTime() {
+		if (targetTime <= Time.realtimeSinceStartup) { //
+			float leftOver = Time.realtimeSinceStartup - targetTime;
+			initBeat(leftOver);
+			rate = leftOver / loopTime;
+		}
+		float now = Time.realtimeSinceStartup - startTime;
+		rate = now / loopTime;
+	}
+
+	public float getRate() {
+		return rate;
+	}
+
 	public float getRateFromTime() {
 		if (targetTime <= Time.realtimeSinceStartup) { //
-			initBeat();
-			return 0;
+			float leftOver = Time.realtimeSinceStartup - targetTime;
+			initBeat(leftOver);
+			return leftOver / loopTime;
 		}
 		float now = Time.realtimeSinceStartup - startTime;
 		rate = now / loopTime;
@@ -75,8 +90,8 @@ public class TimeCtrl : MonoBehaviour {
 	float startTime;
 	float targetTime;
 
-	public void initBeat() {
-		startTime = Time.realtimeSinceStartup;
+	public void initBeat(float pLeftTime = 0) {
+		startTime = Time.realtimeSinceStartup + pLeftTime;
 		targetTime = startTime + loopTime;
 		_gameCtrl.PlaySE (AudioCtrl.SE_KICK);
 	}

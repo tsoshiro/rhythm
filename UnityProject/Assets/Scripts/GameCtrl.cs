@@ -107,14 +107,21 @@ public class GameCtrl : MonoBehaviour {
 		score = 0;
 	}
 
+	void FixedUpdate() {
+		// BPMに合わせて時間を動かす
+		_timeCtrl.setLoopTimeFromBPM (_BPM);	
+
+		_timeCtrl.clockTime ();
+	}
+
+	bool isTouched = false;
+
 	// Update is called once per frame
 	void Update () 
 	{
 		if (gameMode != GAME_MODE.PLAY) {
 			return;
 		}
-		// BPMに合わせて時間を動かす
-		_timeCtrl.setLoopTimeFromBPM (_BPM);
 
 		// 表示判定
 		if (display_mode == DISPLAY_MODE.CIRCLE) {
@@ -123,7 +130,6 @@ public class GameCtrl : MonoBehaviour {
 			moveCube ();
 		}
 
-
 		// タップを判定する
 		#if UNITY_EDITOR
 		if (Input.GetMouseButtonDown (0) ||
@@ -131,14 +137,15 @@ public class GameCtrl : MonoBehaviour {
 		{
 			tap ();
 		}
-		#elif UNITY_IOS || UNITY_ANDROID 
+		#elif UNITY_IOS || UNITY_ANDROID
 		if (Input.touchCount > 0) {
-			Touch singleTouch = Input.GetTouch (0);
-			if (singleTouch.phase == TouchPhase.Began) {
-				tap ();
-			}
+		Touch singleTouch = Input.GetTouch (0);
+		if (singleTouch.phase == TouchPhase.Began) {
+		tap ();
+		}
 		}
 		#endif
+
 	}
 
 	#region SETTINGS
@@ -290,7 +297,8 @@ public class GameCtrl : MonoBehaviour {
 	// 数秒ごとにバーが左から右い流れていく
 	void moveCube() {
 //		float rate = _timeCtrl.getGaugeRate ();
-		float rate = _timeCtrl.getRateFromTime();
+//		float rate = _timeCtrl.getRateFromTime();
+		float rate = _timeCtrl.getRate();
 
 		// 0 → 1を -3 → 3に変換し、x座標に代入
 		rate *= CUBE_WIDTH * 2;
