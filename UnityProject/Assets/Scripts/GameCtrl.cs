@@ -24,7 +24,6 @@ public class GameCtrl : MonoBehaviour {
 	}
 	public	DISPLAY_MODE display_mode;
 
-
 	public TextMesh _tapResultText;
 	public TextMesh _ScoreText;
 	public TextMesh _killCountLabel;
@@ -59,6 +58,8 @@ public class GameCtrl : MonoBehaviour {
 	Vector3 _cubeTargetScale;
 
 	[Header("Debug Settings")]
+	public Text fpsDisplay;
+
 	public GameObject debugControls;
 	public GameObject debugPanel;
 	public Slider	debugBPM;
@@ -105,6 +106,68 @@ public class GameCtrl : MonoBehaviour {
 		}
 
 		score = 0;
+
+		// 初期化処理
+		initUserData ();
+		showUserData ();
+	}
+
+
+	public TextMesh _userLvLabelLabel;
+	public TextMesh _userPPTLabelLabel;
+	public Text _nextLevelLabel;
+	public Text _purchaseBtnLabel;
+
+	UserData _userData;
+	UserData _nextUserData;
+
+	string PREF_USER_LEVEL = "UserLevel";
+	string PREF_USER_COIN = "UserCoin";
+	string PREF_KILL_COUNT = "KillCount";
+
+
+	void initUserData() {
+		int userLv = PlayerPrefs.GetInt (PREF_USER_LEVEL);
+		if (userLv == 0) {
+			userLv = 1;
+		}
+		_userData = new UserData (userLv);
+		_playerCtrl.setUserData (_userData);
+
+
+		int nextUserLv = userLv + 1;
+		_nextUserData = new UserData (nextUserLv);
+
+		int userCoin = PlayerPrefs.GetInt (PREF_USER_COIN);
+	}
+
+	void showUserData() {
+		_userLvLabelLabel.text = "Lv: "+_userData.level;
+		_userPPTLabelLabel.text = "PPT: "+_userData.pointPerTap;
+
+		_nextLevelLabel.text = "Next Lv : " + _nextUserData.level + "\n"
+						+ "PPT : " + _nextUserData.pointPerTap;
+		_purchaseBtnLabel.text = "LEVEL UP!\n" + _userData.nextLevelCoin + " COIN";
+	}
+
+	public void purchase() {
+		int useCoinValue = _userData.nextLevelCoin;
+		if (_playerCtrl.getCoin () < useCoinValue) {
+			Debug.Log ("CAN'T BUY");
+			return;
+		}
+		_userData.setUserData (_userData.level + 1);
+		_nextUserData.setUserData (_nextUserData.level + 1);
+
+		_playerCtrl.setUserData (_userData);
+		_playerCtrl.useCoin (useCoinValue);
+
+		showUserData ();
+	}
+
+	void saveData() {
+		PlayerPrefs.SetInt (PREF_USER_LEVEL, _userData.level);
+		PlayerPrefs.SetInt (PREF_KILL_COUNT, killCount);
 	}
 
 	void FixedUpdate() {
@@ -112,9 +175,14 @@ public class GameCtrl : MonoBehaviour {
 		_timeCtrl.setLoopTimeFromBPM (_BPM);	
 
 		_timeCtrl.clockTime ();
-	}
 
-	bool isTouched = false;
+		// 表示判定
+		if (display_mode == DISPLAY_MODE.CIRCLE) {
+			stretchCircle ();
+		} else {
+			moveCube ();
+		}
+	}
 
 	// Update is called once per frame
 	void Update () 
@@ -123,12 +191,12 @@ public class GameCtrl : MonoBehaviour {
 			return;
 		}
 
-		// 表示判定
-		if (display_mode == DISPLAY_MODE.CIRCLE) {
-			stretchCircle ();
-		} else {
-			moveCube ();
-		}
+//		// 表示判定
+//		if (display_mode == DISPLAY_MODE.CIRCLE) {
+//			stretchCircle ();
+//		} else {
+//			moveCube ();
+//		}
 
 		// タップを判定する
 		#if UNITY_EDITOR
@@ -140,12 +208,13 @@ public class GameCtrl : MonoBehaviour {
 		#elif UNITY_IOS || UNITY_ANDROID
 		if (Input.touchCount > 0) {
 		Touch singleTouch = Input.GetTouch (0);
-		if (singleTouch.phase == TouchPhase.Began) {
-		tap ();
-		}
+			if (singleTouch.phase == TouchPhase.Began) {
+				tap ();
+			}
 		}
 		#endif
 
+		showFPSDisplay ();
 	}
 
 	#region SETTINGS
@@ -195,6 +264,12 @@ public class GameCtrl : MonoBehaviour {
 
 		debugControls.SetActive(false);
 		gameMode = GAME_MODE.PLAY;
+	}
+
+	// デバッグ用にFPSを出力
+	void showFPSDisplay() {
+		float fps = 1f / Time.deltaTime;
+		fpsDisplay.text = fps.ToString ("F2");
 	}
 	#endregion
 

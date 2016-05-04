@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class PlayerCtrl : MonoBehaviour {
+	
 	int 	coin;
 
 	[SerializeField]
@@ -10,8 +11,8 @@ public class PlayerCtrl : MonoBehaviour {
 	public TextMesh _pptLabel;
 	public TextMesh _coinLabel;
 
-	void Start() {
-		setPPT (ppt);
+	public void setUserData(UserData pUser) {
+		ppt = (float)pUser.pointPerTap;
 	}
 
 	void setPPT(float pPPT) {
@@ -23,8 +24,17 @@ public class PlayerCtrl : MonoBehaviour {
 		return ppt;
 	}
 
+	public int getCoin() {
+		return coin;
+	}
+
 	public void addCoin(int pCoin) {
 		coin += pCoin;
 		_coinLabel.text = "COIN:"+coin;
+	}
+
+	public void useCoin(int pCoin) {
+		coin -= pCoin;
+		_coinLabel.text = "COIN:" + coin;
 	}
 }
