@@ -44,7 +44,7 @@ public class TimeCtrl : MonoBehaviour {
 		GameCtrl.TIMING result = GameCtrl.TIMING.BAD;
 
 		float difference = Mathf.Abs (rate - targetRate);
-		Debug.Log ("rate : " + rate);
+//		Debug.Log ("rate : " + rate);
 		if (difference <= _gameCtrl.DIF_VAL_EXCELLENT) {
 			result = GameCtrl.TIMING.EXCELLENT;
 		} else if (difference <= _gameCtrl.DIF_VAL_GREAT) {

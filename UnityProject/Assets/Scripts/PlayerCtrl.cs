@@ -2,7 +2,6 @@
 using System.Collections;
 
 public class PlayerCtrl : MonoBehaviour {
-	
 	int 	coin;
 
 	[SerializeField]
@@ -35,6 +34,11 @@ public class PlayerCtrl : MonoBehaviour {
 
 	public void useCoin(int pCoin) {
 		coin -= pCoin;
+		_coinLabel.text = "COIN:" + coin;
+	}
+
+	public void setCoin(int pCoin) {
+		coin = pCoin;
 		_coinLabel.text = "COIN:" + coin;
 	}
 }

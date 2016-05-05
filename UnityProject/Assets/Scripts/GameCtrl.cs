@@ -124,6 +124,7 @@ public class GameCtrl : MonoBehaviour {
 	string PREF_USER_LEVEL = "UserLevel";
 	string PREF_USER_COIN = "UserCoin";
 	string PREF_KILL_COUNT = "KillCount";
+	string PREF_ENMEY_NUM = "EnemyNum";
 
 
 	void initUserData() {
@@ -134,11 +135,14 @@ public class GameCtrl : MonoBehaviour {
 		_userData = new UserData (userLv);
 		_playerCtrl.setUserData (_userData);
 
-
 		int nextUserLv = userLv + 1;
 		_nextUserData = new UserData (nextUserLv);
 
 		int userCoin = PlayerPrefs.GetInt (PREF_USER_COIN);
+		_playerCtrl.addCoin (userCoin);
+		killCount = PlayerPrefs.GetInt (PREF_KILL_COUNT);
+
+		_enemyCtrl.initEnemy (killCount, PlayerPrefs.GetInt (PREF_ENMEY_NUM));
 	}
 
 	void showUserData() {
@@ -166,22 +170,48 @@ public class GameCtrl : MonoBehaviour {
 	}
 
 	void saveData() {
+		Debug.Log ("SET LEVEL:"+_userData.level+" COIN:"+_playerCtrl.getCoin()+" KILL COUNT:"+killCount);
 		PlayerPrefs.SetInt (PREF_USER_LEVEL, _userData.level);
 		PlayerPrefs.SetInt (PREF_KILL_COUNT, killCount);
+		PlayerPrefs.SetInt (PREF_USER_COIN, _playerCtrl.getCoin ());
+		PlayerPrefs.SetInt (PREF_ENMEY_NUM, _enemyCtrl.getEnemyNum());
+	}
+
+	public void resetSaveData() {
+		_userData.setUserData (1);
+		_nextUserData.setUserData (2);
+		showUserData ();
+
+		killCount = 0;
+		_killCountLabel.text = "KILL COUNT: " + killCount;
+
+		_playerCtrl.setCoin (0);
+
+		_enemyCtrl.resetEnemyMAXHP ();
+		_enemyCtrl.initEnemy (killCount);
+
+		PlayerPrefs.SetInt (PREF_USER_LEVEL, 1);
+		PlayerPrefs.SetInt (PREF_KILL_COUNT, killCount);
+		PlayerPrefs.SetInt (PREF_USER_COIN, _playerCtrl.getCoin ());
+		PlayerPrefs.SetInt (PREF_ENMEY_NUM, 0);
 	}
 
 	void FixedUpdate() {
+		if (gameMode != GAME_MODE.PLAY) {
+			return;
+		}
+
 		// BPMに合わせて時間を動かす
 		_timeCtrl.setLoopTimeFromBPM (_BPM);	
 
 		_timeCtrl.clockTime ();
 
 		// 表示判定
-		if (display_mode == DISPLAY_MODE.CIRCLE) {
-			stretchCircle ();
-		} else {
-			moveCube ();
-		}
+//		if (display_mode == DISPLAY_MODE.CIRCLE) {
+//			stretchCircle ();
+//		} else {
+//			moveCube ();
+//		}
 	}
 
 	// Update is called once per frame
@@ -191,12 +221,12 @@ public class GameCtrl : MonoBehaviour {
 			return;
 		}
 
-//		// 表示判定
-//		if (display_mode == DISPLAY_MODE.CIRCLE) {
-//			stretchCircle ();
-//		} else {
-//			moveCube ();
-//		}
+		// 表示判定
+		if (display_mode == DISPLAY_MODE.CIRCLE) {
+			stretchCircle ();
+		} else {
+			moveCube ();
+		}
 
 		// タップを判定する
 		#if UNITY_EDITOR
@@ -286,21 +316,19 @@ public class GameCtrl : MonoBehaviour {
 		}
 			
 		// タップ演出
-		PlaySE (AudioCtrl.SE_HAT);
 		if (display_mode == DISPLAY_MODE.CIRCLE) {
 			iTween.ScaleFrom (_targetCircle, Vector3.one * TARGET_CIRCLE_SCALE_AMOUNT, SCALE_TIME); 
 		} else {
 			iTween.ScaleFrom (_cubeTarget, _cubeTargetScale * TARGET_CUBE_SCALE_AMOUNT, SCALE_TIME); 
 		}
 
-
-
-		// 評価を画面に表示する
+		// 評価による処理振り分け
 		showTapResult(tapResult);
 	}
 
 	void showTapResult(TIMING pTapResult) {
 		string resultText = "";
+		int seNumber = AudioCtrl.SE_HAT_BAD;
 		int addScore = 0;
 		float asc = 0.0f; // コンボ加算用float
 
@@ -310,32 +338,40 @@ public class GameCtrl : MonoBehaviour {
 			asc = (float)SCORE_VAL_PERFECT * comboCount * 1.1f;
 			addScore += Mathf.RoundToInt (asc);
 			_effectCtrl.showEffect ();
+			seNumber = AudioCtrl.SE_HAT_EXCELLENT;
 			break;
 		case TIMING.EXCELLENT:
 			resultText = "EXCELLENT!\n"+comboCount+" COMBO!";
 			asc = (float)SCORE_VAL_EXCELLENT * comboCount * 1.1f;
 			addScore += Mathf.RoundToInt(asc);
 			_effectCtrl.showEffect ();
+			seNumber = AudioCtrl.SE_HAT_EXCELLENT;
 			break;
 		case TIMING.GREAT:
 			resultText = "GREAT!\n"+comboCount+" COMBO!";
 			asc = (float)SCORE_VAL_GOOD * comboCount * 1.1f;
 			addScore += Mathf.RoundToInt(asc);
 			_effectCtrl.showEffect ();
+			seNumber = AudioCtrl.SE_HAT_GREAT;
 			break;
 		case TIMING.GOOD:
 			resultText = "GOOD!";
 			addScore += SCORE_VAL_GOOD;
+			seNumber = AudioCtrl.SE_HAT_GOOD;
 			break;
 		case TIMING.BAD:
 			resultText = "BAD!";
-			addScore += SCORE_VAL_BAD;
+			seNumber = AudioCtrl.SE_HAT_BAD;
 			break;
 		default:
 			resultText = "BAD!";
 			addScore += SCORE_VAL_BAD;
+			seNumber = AudioCtrl.SE_HAT_BAD;
 			break;
 		}
+		//評価によって変えた音を鳴らす
+		_audioCtrl.PlaySE(seNumber);
+
 		score += addScore;
 		_tapResultText.text = resultText;
 		_ScoreText.text = "SCORE\n"+score+"pt";
@@ -359,6 +395,7 @@ public class GameCtrl : MonoBehaviour {
 		_killCountLabel.text = "KILL COUNT: " + killCount;
 
 		_playerCtrl.addCoin (100);
+		saveData ();
 	}
 
 	// x秒ごとに円が収縮を繰り返す
