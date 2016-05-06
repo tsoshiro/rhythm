@@ -7,7 +7,8 @@ public class AudioCtrl : MonoBehaviour {
 	public const int SE_HAT_GOOD	= 2;
 	public const int SE_HAT_GREAT 	= 3;
 	public const int SE_HAT_EXCELLENT = 4;
-	public const int SE_LV_UP = 5;
+	public const int SE_SNARE = 5;
+	public const int SE_LV_UP = 6;
 
 
 	public AudioSource[] _audioSourceArray;

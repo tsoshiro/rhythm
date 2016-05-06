@@ -29,9 +29,10 @@ public class GameCtrl : MonoBehaviour {
 	public TextMesh _killCountLabel;
 
 	[Header("Game Settings")]
-	public GAME_MODE gameMode = GAME_MODE.PLAY;
+	public GAME_MODE gameMode = GAME_MODE.STAND_BY;
 	public enum GAME_MODE
 	{
+		STAND_BY,
 		PLAY,
 		DEBUG,
 	}
@@ -110,6 +111,8 @@ public class GameCtrl : MonoBehaviour {
 		// 初期化処理
 		initUserData ();
 		showUserData ();
+
+		gameMode = GAME_MODE.PLAY;
 	}
 
 
@@ -128,6 +131,7 @@ public class GameCtrl : MonoBehaviour {
 
 
 	void initUserData() {
+		// ユーザーレベル取得
 		int userLv = PlayerPrefs.GetInt (PREF_USER_LEVEL);
 		if (userLv == 0) {
 			userLv = 1;
@@ -138,10 +142,14 @@ public class GameCtrl : MonoBehaviour {
 		int nextUserLv = userLv + 1;
 		_nextUserData = new UserData (nextUserLv);
 
+		// 所持コイン取得
 		int userCoin = PlayerPrefs.GetInt (PREF_USER_COIN);
 		_playerCtrl.addCoin (userCoin);
+
+		// 討伐数取得
 		killCount = PlayerPrefs.GetInt (PREF_KILL_COUNT);
 
+		// 敵取得
 		_enemyCtrl.initEnemy (killCount, PlayerPrefs.GetInt (PREF_ENMEY_NUM));
 	}
 
@@ -152,6 +160,8 @@ public class GameCtrl : MonoBehaviour {
 		_nextLevelLabel.text = "Next Lv : " + _nextUserData.level + "\n"
 						+ "PPT : " + _nextUserData.pointPerTap;
 		_purchaseBtnLabel.text = "LEVEL UP!\n" + _userData.nextLevelCoin + " COIN";
+
+		_killCountLabel.text = "Kill Count: " + killCount;
 	}
 
 	public void purchase() {
@@ -425,5 +435,18 @@ public class GameCtrl : MonoBehaviour {
 	// Audio
 	public void PlaySE(int pSeNumber) {
 		_audioCtrl.PlaySE (pSeNumber);
+	}
+
+	// Interface
+	int beatNum = 0;
+	public bool isPlaySnare() {
+		if (comboCount >= 4) {
+			if (beatNum == 1) {
+				beatNum = 0;
+				return true;			
+			}
+			beatNum++;
+		}
+		return false;
 	}
 }

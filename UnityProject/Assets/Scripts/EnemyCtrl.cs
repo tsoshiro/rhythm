@@ -15,7 +15,6 @@ public class EnemyCtrl : MonoBehaviour {
 
 	void Start() {
 		_gameCtrl = this.transform.parent.GetComponent<GameCtrl> ();
-
 		initEnemiesArray ();
 	}
 
@@ -45,13 +44,16 @@ public class EnemyCtrl : MonoBehaviour {
 		hp = MAX_HP;
 	}
 
-	// Use this for initialization
-	public void initEnemy(int pLastKillCount = 0, int pLastEnemyNum = 0) {
+	public void initEnemy(int pLastKillCount = 0, int pLastEnemyNum = -1) {
 		hp = MAX_HP + (float)pLastKillCount * ADD_HP;
 		_hpCtrl.initHp (hp);
 		_hpCtrl.setValue (hp);
 
-		enemyNum = pLastEnemyNum;
+		// ID指定があれば
+		if (pLastEnemyNum >= 0) {
+			enemyNum = pLastEnemyNum;
+		}
+
 		for (int i = 0; i < _enemiesArray.Length; i++) {
 			if (i == enemyNum) {
 				iTween.FadeTo (_enemiesArray [i], iTween.Hash ("a", 1, "time", 0.5f));

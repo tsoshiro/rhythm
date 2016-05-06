@@ -94,5 +94,9 @@ public class TimeCtrl : MonoBehaviour {
 		startTime = Time.realtimeSinceStartup + pLeftTime;
 		targetTime = startTime + loopTime;
 		_gameCtrl.PlaySE (AudioCtrl.SE_KICK);
+
+		if (_gameCtrl.isPlaySnare ()) {
+			_gameCtrl.PlaySE (AudioCtrl.SE_SNARE);
+		}
 	}
 }
