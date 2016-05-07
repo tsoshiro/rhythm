@@ -38,13 +38,19 @@ public class TimeCtrl : MonoBehaviour {
 		return rate;
 	}
 
+
+	float lastDifference;
+
 	// タップしたタイミングとターゲットタイミングとの差に応じて評価を返す
 	public GameCtrl.TIMING getTapResult() {
 		float targetRate = 0.5f;
 		GameCtrl.TIMING result = GameCtrl.TIMING.BAD;
 
-		float difference = Mathf.Abs (rate - targetRate);
-//		Debug.Log ("rate : " + rate);
+		// 差異を記録しておき、タップのタイミングが遅いか早いかを算出する
+		lastDifference = rate - targetRate;
+
+		// 差異を絶対値にし、判定する
+		float difference = Mathf.Abs (lastDifference);
 		if (difference <= _gameCtrl.DIF_VAL_EXCELLENT) {
 			result = GameCtrl.TIMING.EXCELLENT;
 		} else if (difference <= _gameCtrl.DIF_VAL_GREAT) {
@@ -98,5 +104,9 @@ public class TimeCtrl : MonoBehaviour {
 		if (_gameCtrl.isPlaySnare ()) {
 			_gameCtrl.PlaySE (AudioCtrl.SE_SNARE);
 		}
+	}
+
+	public float getLastDifference() {
+		return lastDifference;
 	}
 }

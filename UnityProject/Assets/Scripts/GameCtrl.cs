@@ -26,6 +26,7 @@ public class GameCtrl : MonoBehaviour {
 
 	public TextMesh _tapResultText;
 	public TextMesh _ScoreText;
+	public TextMesh _maxComboLabel;
 	public TextMesh _killCountLabel;
 
 	[Header("Game Settings")]
@@ -50,6 +51,7 @@ public class GameCtrl : MonoBehaviour {
 	int comboCount;
 	int score = 0;
 	int killCount = 0;
+	int maxCombo = 0;
 
 	[Header("Circle Display Logic")]
 	Vector3 _movingCircleScale;
@@ -126,8 +128,10 @@ public class GameCtrl : MonoBehaviour {
 
 	string PREF_USER_LEVEL = "UserLevel";
 	string PREF_USER_COIN = "UserCoin";
+	string PREF_USER_MAX_COMBO = "MaxCombo";
 	string PREF_KILL_COUNT = "KillCount";
 	string PREF_ENMEY_NUM = "EnemyNum";
+
 
 
 	void initUserData() {
@@ -146,6 +150,9 @@ public class GameCtrl : MonoBehaviour {
 		int userCoin = PlayerPrefs.GetInt (PREF_USER_COIN);
 		_playerCtrl.addCoin (userCoin);
 
+		// 最大コンボ数取得
+		maxCombo = PlayerPrefs.GetInt(PREF_USER_MAX_COMBO);
+
 		// 討伐数取得
 		killCount = PlayerPrefs.GetInt (PREF_KILL_COUNT);
 
@@ -160,6 +167,8 @@ public class GameCtrl : MonoBehaviour {
 		_nextLevelLabel.text = "Next Lv : " + _nextUserData.level + "\n"
 						+ "PPT : " + _nextUserData.pointPerTap;
 		_purchaseBtnLabel.text = "LEVEL UP!\n" + _userData.nextLevelCoin + " COIN";
+
+		_maxComboLabel.text = "Max Combo: " + maxCombo;
 
 		_killCountLabel.text = "Kill Count: " + killCount;
 	}
@@ -176,6 +185,9 @@ public class GameCtrl : MonoBehaviour {
 		_playerCtrl.setUserData (_userData);
 		_playerCtrl.useCoin (useCoinValue);
 
+		// LvUP音を再生
+		PlaySE(AudioCtrl.SE_LV_UP);
+
 		showUserData ();
 	}
 
@@ -185,6 +197,7 @@ public class GameCtrl : MonoBehaviour {
 		PlayerPrefs.SetInt (PREF_KILL_COUNT, killCount);
 		PlayerPrefs.SetInt (PREF_USER_COIN, _playerCtrl.getCoin ());
 		PlayerPrefs.SetInt (PREF_ENMEY_NUM, _enemyCtrl.getEnemyNum());
+		PlayerPrefs.SetInt (PREF_USER_MAX_COMBO, maxCombo);
 	}
 
 	public void resetSaveData() {
@@ -322,6 +335,8 @@ public class GameCtrl : MonoBehaviour {
 		if (tapResult == TIMING.EXCELLENT || tapResult == TIMING.GREAT) {
 			comboCount++;
 		} else {
+			// 最大コンボかチェック
+			checkMaxCombo();
 			comboCount = 0;
 		}
 			
@@ -336,32 +351,42 @@ public class GameCtrl : MonoBehaviour {
 		showTapResult(tapResult);
 	}
 
+	void checkMaxCombo() {
+		if (comboCount >= maxCombo) {
+			// 最大コンボ数を更新
+			maxCombo = comboCount;
+			showUserData ();
+			saveData();
+		}
+	}
+
 	void showTapResult(TIMING pTapResult) {
 		string resultText = "";
 		int seNumber = AudioCtrl.SE_HAT_BAD;
 		int addScore = 0;
 		float asc = 0.0f; // コンボ加算用float
 
+		// 遅すぎか早すぎか判定し、早すぎなら << 遅すぎなら >> と表示する。
+		bool isSlow = (_timeCtrl.getLastDifference () > 0);
+		string slowSign = "<<";
+		if (isSlow) {
+			slowSign = ">>";
+		}
+
 		switch (pTapResult) {
 		case TIMING.PERFECT:
-			resultText = "PERFECT!\n" + comboCount + " COMBO!";
-			asc = (float)SCORE_VAL_PERFECT * comboCount * 1.1f;
-			addScore += Mathf.RoundToInt (asc);
-			_effectCtrl.showEffect ();
+			resultText = "PERFECT!";
+			asc = getComboBonus (SCORE_VAL_PERFECT);
 			seNumber = AudioCtrl.SE_HAT_EXCELLENT;
 			break;
 		case TIMING.EXCELLENT:
-			resultText = "EXCELLENT!\n"+comboCount+" COMBO!";
-			asc = (float)SCORE_VAL_EXCELLENT * comboCount * 1.1f;
-			addScore += Mathf.RoundToInt(asc);
-			_effectCtrl.showEffect ();
+			resultText = "EXCELLENT!";
+			asc = getComboBonus (SCORE_VAL_PERFECT);
 			seNumber = AudioCtrl.SE_HAT_EXCELLENT;
 			break;
 		case TIMING.GREAT:
-			resultText = "GREAT!\n"+comboCount+" COMBO!";
-			asc = (float)SCORE_VAL_GOOD * comboCount * 1.1f;
-			addScore += Mathf.RoundToInt(asc);
-			_effectCtrl.showEffect ();
+			resultText = "GREAT!";
+			asc = getComboBonus (SCORE_VAL_PERFECT);
 			seNumber = AudioCtrl.SE_HAT_GREAT;
 			break;
 		case TIMING.GOOD:
@@ -372,16 +397,28 @@ public class GameCtrl : MonoBehaviour {
 		case TIMING.BAD:
 			resultText = "BAD!";
 			seNumber = AudioCtrl.SE_HAT_BAD;
-			break;
-		default:
-			resultText = "BAD!";
 			addScore += SCORE_VAL_BAD;
-			seNumber = AudioCtrl.SE_HAT_BAD;
 			break;
 		}
-		//評価によって変えた音を鳴らす
+
+		//評価によって音を変えて鳴らす
 		_audioCtrl.PlaySE(seNumber);
 
+		// 表記テキストの装飾
+		if (isSlow) {
+			resultText = resultText + slowSign;
+		} else {
+			resultText = slowSign + resultText;
+		}
+
+		// GREAT以上であればコンボ表記・エフェクト発生・コンボボーナス
+		if (pTapResult == TIMING.PERFECT || pTapResult == TIMING.EXCELLENT || pTapResult == TIMING.GREAT) {
+			resultText += "\n" + comboCount + " COMBO!";
+			_effectCtrl.showEffect ();
+			addScore += Mathf.RoundToInt (asc);
+		}
+
+		// スコア加算
 		score += addScore;
 		_tapResultText.text = resultText;
 		_ScoreText.text = "SCORE\n"+score+"pt";
@@ -390,6 +427,11 @@ public class GameCtrl : MonoBehaviour {
 		// プレイヤーのPPTの値から敵に与えるダメージを算出
 		float point = (float)addScore / 100 * _playerCtrl.getPPT ();
 		sendPointToEnemy (point);
+	}
+
+	float getComboBonus(int pResultValue) {
+		float addPercentage = (100 + (float)comboCount) / 100; // 1コンボあたり1%スコアがプラスされる
+		return (float)pResultValue * addPercentage;
 	}
 
 	public TextMesh _damageText;
@@ -403,8 +445,13 @@ public class GameCtrl : MonoBehaviour {
 	public void killEnemy() {
 		killCount++;
 		_killCountLabel.text = "KILL COUNT: " + killCount;
+		_enemyCtrl.spawnEnemy (killCount);
 
 		_playerCtrl.addCoin (100);
+
+		// 敵撃退音
+		PlaySE (AudioCtrl.SE_KILL_ENEMY);
+
 		saveData ();
 	}
 

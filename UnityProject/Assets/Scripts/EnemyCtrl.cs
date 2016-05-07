@@ -29,15 +29,14 @@ public class EnemyCtrl : MonoBehaviour {
 	public void hitPoint(float pPoint) {
 		hp -= pPoint;
 		if (hp <= 0) {
-			dieEnemy ();
+			_gameCtrl.killEnemy ();
 		}
 		_hpCtrl.setValue (hp);
 	}
 
-	void dieEnemy() {
-		_gameCtrl.killEnemy ();
+	public void spawnEnemy(int pKillCount) {
 		MAX_HP += 200;
-		initEnemy ();
+		initEnemy (pKillCount);	
 	}
 
 	public void resetEnemyMAXHP() {
@@ -45,7 +44,9 @@ public class EnemyCtrl : MonoBehaviour {
 	}
 
 	public void initEnemy(int pLastKillCount = 0, int pLastEnemyNum = -1) {
+		Debug.Log ("pLastKillCount:" + pLastKillCount+" MAX_HP:"+MAX_HP);
 		hp = MAX_HP + (float)pLastKillCount * ADD_HP;
+		Debug.Log ("hp:" + hp);
 		_hpCtrl.initHp (hp);
 		_hpCtrl.setValue (hp);
 

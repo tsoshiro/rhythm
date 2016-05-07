@@ -2,13 +2,14 @@
 using System.Collections;
 
 public class AudioCtrl : MonoBehaviour {
-	public const int SE_KICK 	= 0;
-	public const int SE_HAT_BAD 	= 1;
-	public const int SE_HAT_GOOD	= 2;
-	public const int SE_HAT_GREAT 	= 3;
-	public const int SE_HAT_EXCELLENT = 4;
-	public const int SE_SNARE = 5;
-	public const int SE_LV_UP = 6;
+	public const int SE_KICK 			= 0;
+	public const int SE_HAT_BAD 		= 1;
+	public const int SE_HAT_GOOD		= 2;
+	public const int SE_HAT_GREAT 		= 3;
+	public const int SE_HAT_EXCELLENT 	= 4;
+	public const int SE_SNARE 			= 5;
+	public const int SE_LV_UP 			= 6;
+	public const int SE_KILL_ENEMY 		= 7;
 
 
 	public AudioSource[] _audioSourceArray;
