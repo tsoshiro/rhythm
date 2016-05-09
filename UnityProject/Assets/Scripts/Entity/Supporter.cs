@@ -5,19 +5,29 @@ public class Supporter {
 	public int id; // サポーターID
 	public string name; // サポーター名
 	public int level; //現在のレベル
-	public int pointPerSecond; // 現在の1秒あたりポイント
-	public int nextLevelCoin; // 次のレベルに必要なコイン
+	public float pointPerSecond; // 現在の1秒あたりポイント
+	public float nextLevelCoin; // 次のレベルに必要なコイン
 
+	float attackInterval; // pointPerSecondを元に何秒に1回攻撃するか
+	float pointPerAttack; // 1回の攻撃につき、何ポイントダメージを与えるか
 
 	public void levelUp(int pAddLevel) {
 		level += pAddLevel;
 	}
 
-	public Supporter(int pId, int pLevel) {
+	public Supporter() {
+		//
+	}
+
+	public void initSupporter(int pId, int pLevel) {
 		id = pId;
 		name = getSupporterName (pId);
 		level = pLevel;
-		pointPerSecond = getSupporterPps (pId, pLevel);
+
+		attackInterval = 2.0f;
+		pointPerAttack = 400;
+
+		pointPerSecond = getPps (attackInterval, pointPerAttack);
 	}
 
 	string getSupporterName(int pId) {
@@ -25,8 +35,21 @@ public class Supporter {
 		return result;
 	}
 
-	int getSupporterPps(int pId, int pLevel) {
-		int value = 0;
-		return value;
+	float getPps(float pTime, float pPPA) {
+		return pPPA / pTime;
+	}
+		
+	float timer;
+	public float getPointUpdate() {
+		// Updateごとに呼び出されAttackInterval秒ごとにPointPerAttackの値を返す
+		timer += Time.deltaTime;
+		if (timer >= attackInterval) {
+			float amari = timer - attackInterval;
+			timer = amari;
+
+			// ATTACK
+			return pointPerAttack;
+		}
+		return 0f;
 	}
 }
