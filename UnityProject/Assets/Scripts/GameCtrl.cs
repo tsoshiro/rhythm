@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class GameCtrl : MonoBehaviour {
 	[Header("Control Settings")]
@@ -28,6 +29,7 @@ public class GameCtrl : MonoBehaviour {
 	public TextMesh _ScoreText;
 	public TextMesh _maxComboLabel;
 	public TextMesh _killCountLabel;
+	public TextMesh _damageText;
 
 	[Header("Game Settings")]
 	public GAME_MODE gameMode = GAME_MODE.STAND_BY;
@@ -52,6 +54,9 @@ public class GameCtrl : MonoBehaviour {
 	int score = 0;
 	int killCount = 0;
 	int maxCombo = 0;
+
+	// Supporters
+	List<Supporter> supportersList;
 
 	[Header("Circle Display Logic")]
 	Vector3 _movingCircleScale;
@@ -146,6 +151,9 @@ public class GameCtrl : MonoBehaviour {
 		int nextUserLv = userLv + 1;
 		_nextUserData = new UserData (nextUserLv);
 
+		// サポーター情報取得
+		setSupporters ();
+
 		// 所持コイン取得
 		int userCoin = PlayerPrefs.GetInt (PREF_USER_COIN);
 		_playerCtrl.addCoin (userCoin);
@@ -158,6 +166,21 @@ public class GameCtrl : MonoBehaviour {
 
 		// 敵取得
 		_enemyCtrl.initEnemy (killCount, PlayerPrefs.GetInt (PREF_ENMEY_NUM));
+	}
+
+	// サポーター情報をセット
+	void setSupporters() {
+		supportersList = new List<Supporter>();
+
+		// 所持サポーター数
+		int count = 1;
+		int id = 1;
+		for (int i = 0; i < count; i++) {
+			Supporter sp = new Supporter ();
+			sp.initSupporter (id, 1);
+			Debug.Log ("SP ID:" + sp.id + " NAME:"+sp.name+"PPS:" + sp.pointPerSecond);
+			supportersList.Add (sp);
+		}
 	}
 
 	void showUserData() {
@@ -228,13 +251,6 @@ public class GameCtrl : MonoBehaviour {
 		_timeCtrl.setLoopTimeFromBPM (_BPM);	
 
 		_timeCtrl.clockTime ();
-
-		// 表示判定
-//		if (display_mode == DISPLAY_MODE.CIRCLE) {
-//			stretchCircle ();
-//		} else {
-//			moveCube ();
-//		}
 	}
 
 	// Update is called once per frame
@@ -266,6 +282,8 @@ public class GameCtrl : MonoBehaviour {
 			}
 		}
 		#endif
+
+		getSupporterValues ();
 
 		showFPSDisplay ();
 	}
@@ -434,9 +452,13 @@ public class GameCtrl : MonoBehaviour {
 		return (float)pResultValue * addPercentage;
 	}
 
-	public TextMesh _damageText;
-	void sendPointToEnemy(float pPoint) {
+	void sendPointToEnemy(float pPoint, bool pIsPlayer = true) {
 		_enemyCtrl.hitPoint (pPoint);
+
+		// サポーター攻撃であればダメージ表示は行わない
+		if (!pIsPlayer) {
+			return;
+		}
 		_damageText.text = ""+Mathf.RoundToInt(pPoint);
 		_damageText.GetComponent<AutoFade> ().resetColor ();
 		iTween.ScaleFrom (_damageText.gameObject, Vector3.one * RESULT_TEXT_SCALE_AMOUNT, SCALE_TIME);
@@ -455,6 +477,20 @@ public class GameCtrl : MonoBehaviour {
 		saveData ();
 	}
 
+	// サポーターのポイントを取得し、反映させる
+	void getSupporterValues() {
+		if (supportersList.Count <= 0) {
+			return;
+		}
+
+		float supportersPoint = 0.0f;
+		for (int i = 0; i < supportersList.Count; i++) {
+			supportersPoint += supportersList [i].getPointUpdate ();
+		}
+		sendPointToEnemy (supportersPoint, false);
+	}
+
+	#region Move Meters
 	// x秒ごとに円が収縮を繰り返す
 	void stretchCircle() {
 		float rate = _timeCtrl.getGaugeRate ();
@@ -465,8 +501,6 @@ public class GameCtrl : MonoBehaviour {
 
 	// 数秒ごとにバーが左から右い流れていく
 	void moveCube() {
-//		float rate = _timeCtrl.getGaugeRate ();
-//		float rate = _timeCtrl.getRateFromTime();
 		float rate = _timeCtrl.getRate();
 
 		// 0 → 1を -3 → 3に変換し、x座標に代入
@@ -478,8 +512,9 @@ public class GameCtrl : MonoBehaviour {
 
 		_cubeMoving.transform.position = pos;
 	}
+	#endregion
 
-	// Audio
+	#region Audio
 	public void PlaySE(int pSeNumber) {
 		_audioCtrl.PlaySE (pSeNumber);
 	}
@@ -496,4 +531,5 @@ public class GameCtrl : MonoBehaviour {
 		}
 		return false;
 	}
+	#endregion
 }

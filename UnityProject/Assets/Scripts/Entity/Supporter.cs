@@ -24,14 +24,14 @@ public class Supporter {
 		name = getSupporterName (pId);
 		level = pLevel;
 
-		attackInterval = 2.0f;
-		pointPerAttack = 400;
+		attackInterval = 1.0f;
+		pointPerAttack = 4000;
 
 		pointPerSecond = getPps (attackInterval, pointPerAttack);
 	}
 
 	string getSupporterName(int pId) {
-		string result = "";
+		string result = "Sample Name";
 		return result;
 	}
 
