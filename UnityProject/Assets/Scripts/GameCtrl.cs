@@ -57,6 +57,8 @@ public class GameCtrl : MonoBehaviour {
 
 	// Supporters
 	List<Supporter> supportersList;
+	// Level Cost Table
+	int[] supporterNextLevelCoin;
 
 	[Header("Circle Display Logic")]
 	Vector3 _movingCircleScale;
@@ -170,6 +172,15 @@ public class GameCtrl : MonoBehaviour {
 
 	// サポーター情報をセット
 	void setSupporters() {
+		// コスト情報を取得
+		// 仮にサポーターの種類は3種類だとしておく。
+		int availableSupportersNumber = 3;
+		supporterNextLevelCoin = new int[availableSupportersNumber];
+		// 仮設定
+		for (int i = 0; i < availableSupportersNumber; i++) {
+			supporterNextLevelCoin [i] = 100 * i;
+		}
+
 		supportersList = new List<Supporter>();
 
 		// 所持サポーター数
@@ -180,6 +191,9 @@ public class GameCtrl : MonoBehaviour {
 			sp.initSupporter (id, 1);
 			Debug.Log ("SP ID:" + sp.id + " NAME:"+sp.name+"PPS:" + sp.pointPerSecond);
 			supportersList.Add (sp);
+
+			// 解放済みサポーターのコストを更新する
+			supporterNextLevelCoin[id - 1] = sp.nextLevelCoin;
 		}
 	}
 

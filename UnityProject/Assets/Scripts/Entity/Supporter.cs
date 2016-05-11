@@ -6,7 +6,7 @@ public class Supporter {
 	public string name; // サポーター名
 	public int level; //現在のレベル
 	public float pointPerSecond; // 現在の1秒あたりポイント
-	public float nextLevelCoin; // 次のレベルに必要なコイン
+	public int nextLevelCoin; // 次のレベルに必要なコイン
 
 	float attackInterval; // pointPerSecondを元に何秒に1回攻撃するか
 	float pointPerAttack; // 1回の攻撃につき、何ポイントダメージを与えるか
@@ -28,6 +28,7 @@ public class Supporter {
 		pointPerAttack = 4000;
 
 		pointPerSecond = getPps (attackInterval, pointPerAttack);
+		nextLevelCoin = 2000;
 	}
 
 	string getSupporterName(int pId) {
