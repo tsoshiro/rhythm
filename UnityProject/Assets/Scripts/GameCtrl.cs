@@ -142,6 +142,11 @@ public class GameCtrl : MonoBehaviour {
 
 
 	void initUserData() {
+		CSVLoader csvLoader = new CSVLoader ();
+		csvLoader.readData ("user");
+		csvLoader.readData ("enemies");
+		csvLoader.readData ("enemy_levels");
+
 		// ユーザーレベル取得
 		int userLv = PlayerPrefs.GetInt (PREF_USER_LEVEL);
 		if (userLv == 0) {
