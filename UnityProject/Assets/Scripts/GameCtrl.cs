@@ -142,10 +142,19 @@ public class GameCtrl : MonoBehaviour {
 
 
 	void initUserData() {
-		CSVLoader csvLoader = new CSVLoader ();
-		csvLoader.readData ("user");
-		csvLoader.readData ("enemies");
-		csvLoader.readData ("enemy_levels");
+		string test = "sampleTest";
+		test = test.LowerCamelToSnake ();
+		Debug.Log ("LOWER CAMEL TO SNAKE :"+test);
+		var enemymasterTable = new EnemyLevelMasterTable ();
+		enemymasterTable.Load ();
+		foreach (var enemyMaster in enemymasterTable.All) {
+			Debug.Log (enemyMaster.level);
+		}
+
+//		CSVLoader csvLoader = new CSVLoader ();
+//		csvLoader.readData ("user");
+//		csvLoader.readData ("enemies");
+//		csvLoader.readData ("enemy_levels");
 
 		// ユーザーレベル取得
 		int userLv = PlayerPrefs.GetInt (PREF_USER_LEVEL);
