@@ -142,20 +142,6 @@ public class GameCtrl : MonoBehaviour {
 
 
 	void initUserData() {
-		string test = "sampleTest";
-		test = test.LowerCamelToSnake ();
-		Debug.Log ("LOWER CAMEL TO SNAKE :"+test);
-		var enemymasterTable = new EnemyLevelMasterTable ();
-		enemymasterTable.Load ();
-		foreach (var enemyMaster in enemymasterTable.All) {
-			Debug.Log (enemyMaster.level);
-		}
-
-//		CSVLoader csvLoader = new CSVLoader ();
-//		csvLoader.readData ("user");
-//		csvLoader.readData ("enemies");
-//		csvLoader.readData ("enemy_levels");
-
 		// ユーザーレベル取得
 		int userLv = PlayerPrefs.GetInt (PREF_USER_LEVEL);
 		if (userLv == 0) {
@@ -181,7 +167,8 @@ public class GameCtrl : MonoBehaviour {
 		killCount = PlayerPrefs.GetInt (PREF_KILL_COUNT);
 
 		// 敵取得
-		_enemyCtrl.initEnemy (killCount, PlayerPrefs.GetInt (PREF_ENMEY_NUM));
+//		_enemyCtrl.initEnemy (killCount, PlayerPrefs.GetInt (PREF_ENMEY_NUM));
+		_enemyCtrl.initEnemyFromDB (killCount);
 	}
 
 	// サポーター情報をセット
@@ -262,7 +249,7 @@ public class GameCtrl : MonoBehaviour {
 		_playerCtrl.setCoin (0);
 
 		_enemyCtrl.resetEnemyMAXHP ();
-		_enemyCtrl.initEnemy (killCount);
+		_enemyCtrl.initEnemyFromDB (killCount);
 
 		PlayerPrefs.SetInt (PREF_USER_LEVEL, 1);
 		PlayerPrefs.SetInt (PREF_KILL_COUNT, killCount);

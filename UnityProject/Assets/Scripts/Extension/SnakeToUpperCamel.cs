@@ -57,8 +57,6 @@ public static class StringExtensions
 			}
 			count++;
 		}
-//			.Replace ('([A-Z]+)([A-Z][a-z])', '$1_$2')
-//			.Replace ('([a-z])([A-Z])', '$1_$2');
 		return convertStr;
 	}
 }
