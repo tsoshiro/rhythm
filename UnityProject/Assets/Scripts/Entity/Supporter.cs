@@ -25,7 +25,7 @@ public class Supporter {
 		level = pLevel;
 
 		attackInterval = 1.0f;
-		pointPerAttack = 4000;
+		pointPerAttack = 10;
 
 		pointPerSecond = getPps (attackInterval, pointPerAttack);
 		nextLevelCoin = 2000;

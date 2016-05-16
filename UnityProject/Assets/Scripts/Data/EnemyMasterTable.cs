@@ -14,4 +14,5 @@ public class EnemyMaster : MasterBase
 	public string name { get; private set; }
 	public int base_hp { get; private set; }
 	public string image_path { get; private set;}
+	public int drop_coin {get; private set;}
 }

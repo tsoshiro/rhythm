@@ -10,6 +10,7 @@ public class EnemyCtrl : MonoBehaviour {
 	float MAX_HP = 1000.0f;
 	float ADD_HP = 200.0f;
 	float hp;
+	int dropCoin;
 
 	public GameObject _enemies;
 	public GameObject[] _enemiesArray;
@@ -56,7 +57,6 @@ public class EnemyCtrl : MonoBehaviour {
 	}
 
 	public void spawnEnemy(int pKillCount) {
-		MAX_HP += 200;
 		initEnemyFromDB (pKillCount);
 	}
 
@@ -101,10 +101,18 @@ public class EnemyCtrl : MonoBehaviour {
 		}
 		int startId = pKillCount % 3;
 
-		enemyNum = startId - 1;
+		enemyNum = startId;
 		int hpBase = _enemyMasterList [startId].base_hp;
 		float hpLvRate = _enemyLevelMasterList [lv - 1].multiple_rate;
-		hp = (float)hpBase * hpLvRate;
+		MAX_HP = (float)hpBase * hpLvRate;
+		hp = MAX_HP;
+
+		_hpCtrl.initHp (hp);
+		_hpCtrl.setValue (hp);
+
+		dropCoin = (int) ((float)_enemyMasterList[startId].drop_coin * _enemyLevelMasterList [lv - 1].multiple_rate);
+
+		Debug.Log ("id:" + startId + " lv:" + lv + " hpBase:" + hpBase + " hpLvRate:" + hpLvRate + " hp:" + hp+" drop_coin:"+dropCoin);
 
 		for (int i = 0; i < _enemiesArray.Length; i++) {
 			if (i == enemyNum) {
@@ -117,5 +125,9 @@ public class EnemyCtrl : MonoBehaviour {
 
 	public int getEnemyNum() {
 		return enemyNum;
+	}
+
+	public int getDropCoinValue() {
+		return dropCoin;
 	}
 }

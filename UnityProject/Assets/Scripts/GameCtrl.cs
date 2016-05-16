@@ -230,7 +230,6 @@ public class GameCtrl : MonoBehaviour {
 	}
 
 	void saveData() {
-		Debug.Log ("SET LEVEL:"+_userData.level+" COIN:"+_playerCtrl.getCoin()+" KILL COUNT:"+killCount);
 		PlayerPrefs.SetInt (PREF_USER_LEVEL, _userData.level);
 		PlayerPrefs.SetInt (PREF_KILL_COUNT, killCount);
 		PlayerPrefs.SetInt (PREF_USER_COIN, _playerCtrl.getCoin ());
@@ -482,9 +481,11 @@ public class GameCtrl : MonoBehaviour {
 	public void killEnemy() {
 		killCount++;
 		_killCountLabel.text = "KILL COUNT: " + killCount;
+		_playerCtrl.addCoin (_enemyCtrl.getDropCoinValue());
+
 		_enemyCtrl.spawnEnemy (killCount);
 
-		_playerCtrl.addCoin (100);
+
 
 		// 敵撃退音
 		PlaySE (AudioCtrl.SE_KILL_ENEMY);
