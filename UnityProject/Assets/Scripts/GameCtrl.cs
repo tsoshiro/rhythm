@@ -485,8 +485,6 @@ public class GameCtrl : MonoBehaviour {
 
 		_enemyCtrl.spawnEnemy (killCount);
 
-
-
 		// 敵撃退音
 		PlaySE (AudioCtrl.SE_KILL_ENEMY);
 
