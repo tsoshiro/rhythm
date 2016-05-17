@@ -1,4 +1,4 @@
-id,name,base_hp,image_path
-1,ノーマルザコ,300,slime_01
-2,足長ザコ,500,slime_02
-3,キング,1000,slime_03
+id,name,base_hp,image_path,drop_coin
+1,ノーマルザコ,300,slime_01,300
+2,足長ザコ,500,slime_02,500
+3,キング,1000,slime_03,1000

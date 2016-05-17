@@ -11,6 +11,7 @@ public class EnemyCtrl : MonoBehaviour {
 	float ADD_HP = 200.0f;
 	float hp;
 	int dropCoin;
+	string imagePath = "";
 
 	public GameObject _enemies;
 	public GameObject[] _enemiesArray;
@@ -111,11 +112,14 @@ public class EnemyCtrl : MonoBehaviour {
 		_hpCtrl.setValue (hp);
 
 		dropCoin = (int) ((float)_enemyMasterList[startId].drop_coin * _enemyLevelMasterList [lv - 1].multiple_rate);
+		imagePath = _enemyMasterList [startId].image_path;
 
-		Debug.Log ("id:" + startId + " lv:" + lv + " hpBase:" + hpBase + " hpLvRate:" + hpLvRate + " hp:" + hp+" drop_coin:"+dropCoin);
+		Debug.Log ("id:" + startId + " lv:" + lv + " hpBase:" + hpBase + " hpLvRate:" + hpLvRate + " hp:" + hp+" drop_coin:"+dropCoin+" image_path:"+imagePath);
+		Sprite sp = Resources.Load<Sprite> (imagePath);
 
 		for (int i = 0; i < _enemiesArray.Length; i++) {
 			if (i == enemyNum) {
+				_enemiesArray [i].GetComponent<SpriteRenderer> ().sprite = sp;
 				iTween.FadeTo (_enemiesArray [i], iTween.Hash ("a", 1, "time", 0.5f));
 			} else {
 				iTween.FadeTo (_enemiesArray [i], iTween.Hash ("a", 0, "time", 0.5f));
