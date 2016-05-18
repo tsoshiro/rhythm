@@ -211,7 +211,7 @@ public class GameCtrl : MonoBehaviour {
 		_killCountLabel.text = "Kill Count: " + killCount;
 	}
 
-	public void purchase() {
+	public void purchasePlayerLevel() {
 		int useCoinValue = _userData.nextLevelCoin;
 		if (_playerCtrl.getCoin () < useCoinValue) {
 			Debug.Log ("CAN'T BUY");
@@ -227,6 +227,44 @@ public class GameCtrl : MonoBehaviour {
 		PlaySE(AudioCtrl.SE_LV_UP);
 
 		showUserData ();
+	}
+		
+	// サポーターを解放/レベルアップ(引数にはサポーターのID)
+	public void purchaseSupporter(int pId) {
+		// 購入チェック
+		int useCoinValue = 0;
+		if (_playerCtrl.getCoin () < useCoinValue) {
+			Debug.Log ("CAN'T BUY");
+			return;
+		}
+
+		// サポーターを解放済みならレベルップ/そうでないなら解放
+		if (isAvailableSupporter (pId)) {
+			purchaseSupporterLevel (pId);
+		} else {
+			purchaseNewSupporter (pId);
+		}
+	}
+
+	void purchaseNewSupporter(int pId) {
+		// サポータークラスのインスタンスを生成
+
+		// 初期ステータスを設定
+
+		// サポーターリストに追加する
+	}
+
+	void purchaseSupporterLevel(int pId) {
+		// サポーターリストから該当のサポーターが何番目かを取得
+
+		// 次のレベルのデータを取得
+
+		// サポーターのステータスを書き換える
+	}
+
+	// サポーターは解放済みかどうか
+	bool isAvailableSupporter(int pId) {
+		return true;
 	}
 
 	void saveData() {
