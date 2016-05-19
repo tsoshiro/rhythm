@@ -7,11 +7,10 @@ public class EnemyCtrl : MonoBehaviour {
 	GameCtrl _gameCtrl;
 	public HpCtrl _hpCtrl;
 
-	float MAX_HP = 1000.0f;
-	float ADD_HP = 200.0f;
+	float MAX_HP;
 	float hp;
 	int dropCoin;
-	string imagePath = "";
+	string imagePath;
 
 	public GameObject _enemies;
 	public GameObject[] _enemiesArray;
@@ -63,31 +62,6 @@ public class EnemyCtrl : MonoBehaviour {
 
 	public void resetEnemyMAXHP() {
 		hp = MAX_HP;
-	}
-
-	public void initEnemy(int pLastKillCount = 0, int pLastEnemyNum = -1) {
-		Debug.Log ("pLastKillCount:" + pLastKillCount+" MAX_HP:"+MAX_HP);
-		hp = MAX_HP + (float)pLastKillCount * ADD_HP;
-		Debug.Log ("hp:" + hp);
-		_hpCtrl.initHp (hp);
-		_hpCtrl.setValue (hp);
-
-		// ID指定があれば
-		if (pLastEnemyNum >= 0) {
-			enemyNum = pLastEnemyNum;
-		}
-
-		for (int i = 0; i < _enemiesArray.Length; i++) {
-			if (i == enemyNum) {
-				iTween.FadeTo (_enemiesArray [i], iTween.Hash ("a", 1, "time", 0.5f));
-			} else {
-				iTween.FadeTo (_enemiesArray [i], iTween.Hash ("a", 0, "time", 0.5f));
-			}
-		}
-		enemyNum++;
-		if (enemyNum == _enemiesArray.Length) {
-			enemyNum = 0;
-		}
 	}
 
 	public void initEnemyFromDB(int pKillCount)
