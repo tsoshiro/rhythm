@@ -12,7 +12,8 @@ public class SupporterMaster : MasterBase
 	public string id { get; private set; }
 	public string name { get; private set; }
 	public float atk_interval { get; private set; }
+	public int base_ppa { get; private set; }
 	public string image_path { get; private set; }
-	public string growthType {get; private set; }
+	public string growth_type { get; private set; }
 	public int base_coin {get; private set; }
 }

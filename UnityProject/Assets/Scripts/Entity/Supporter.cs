@@ -8,8 +8,8 @@ public class Supporter {
 	public float pointPerSecond; // 現在の1秒あたりポイント
 	public int nextLevelCoin; // 次のレベルに必要なコイン
 
-	float attackInterval; // pointPerSecondを元に何秒に1回攻撃するか
-	float pointPerAttack; // 1回の攻撃につき、何ポイントダメージを与えるか
+	public float attackInterval; // pointPerSecondを元に何秒に1回攻撃するか
+	public float pointPerAttack; // 1回の攻撃につき、何ポイントダメージを与えるか
 
 	public void levelUp(int pAddLevel) {
 		level += pAddLevel;
@@ -36,7 +36,7 @@ public class Supporter {
 		return result;
 	}
 
-	float getPps(float pTime, float pPPA) {
+	public float getPps(float pTime, float pPPA) {
 		return pPPA / pTime;
 	}
 		

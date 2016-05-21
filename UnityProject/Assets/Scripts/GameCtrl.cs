@@ -5,11 +5,12 @@ using System.Collections.Generic;
 
 public class GameCtrl : MonoBehaviour {
 	[Header("Control Settings")]
-	public AudioCtrl 	_audioCtrl;
-	public EffectCtrl 	_effectCtrl;
-	public TimeCtrl 	_timeCtrl;
-	public PlayerCtrl	_playerCtrl;
-	public EnemyCtrl	_enemyCtrl;
+	public AudioCtrl 		_audioCtrl;
+	public EffectCtrl 		_effectCtrl;
+	public TimeCtrl 		_timeCtrl;
+	public PlayerCtrl		_playerCtrl;
+	public EnemyCtrl		_enemyCtrl;
+	public SupporterCtrl	_supporterCtrl;
 
 	[Header("Display Settings")]
 	public GameObject _circle;
@@ -162,35 +163,12 @@ public class GameCtrl : MonoBehaviour {
 		killCount = PlayerPrefs.GetInt (PREF_KILL_COUNT);
 
 		// 敵取得
-//		_enemyCtrl.initEnemy (killCount, PlayerPrefs.GetInt (PREF_ENMEY_NUM));
 		_enemyCtrl.initEnemyFromDB (killCount);
 	}
 
 	// サポーター情報をセット
 	void setSupporters() {
-//		// コスト情報を取得
-//		// 仮にサポーターの種類は3種類だとしておく。
-//		int availableSupportersNumber = 3;
-//		supporterNextLevelCoin = new int[availableSupportersNumber];
-//		// 仮設定
-//		for (int i = 0; i < availableSupportersNumber; i++) {
-//			supporterNextLevelCoin [i] = 100 * i;
-//		}
-//
-//		supportersList = new List<Supporter>();
-//
-//		// 所持サポーター数
-//		int count = 1;
-//		int id = 1;
-//		for (int i = 0; i < count; i++) {
-//			Supporter sp = new Supporter ();
-//			sp.initSupporter (id, 1);
-//			Debug.Log ("SP ID:" + sp.id + " NAME:"+sp.name+"PPS:" + sp.pointPerSecond);
-//			supportersList.Add (sp);
-//
-//			// 解放済みサポーターのコストを更新する
-//			supporterNextLevelCoin[id - 1] = sp.nextLevelCoin;
-//		}
+		_supporterCtrl.init ();
 	}
 
 	void showUserData() {
@@ -526,15 +504,7 @@ public class GameCtrl : MonoBehaviour {
 
 	// サポーターのポイントを取得し、反映させる
 	void getSupporterValues() {
-//		if (supportersList.Count <= 0) {
-//			return;
-//		}
-//
-//		float supportersPoint = 0.0f;
-//		for (int i = 0; i < supportersList.Count; i++) {
-//			supportersPoint += supportersList [i].getPointUpdate ();
-//		}
-//		sendPointToEnemy (supportersPoint, false);
+		sendPointToEnemy (_supporterCtrl.getSupporterValues (), false);
 	}
 
 	#region Move Meters

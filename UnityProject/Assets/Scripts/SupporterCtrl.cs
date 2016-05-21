@@ -18,8 +18,13 @@ public class SupporterCtrl : MonoBehaviour {
 		_gameCtrl = this.transform.parent.GetComponent<GameCtrl> ();
 	}
 
+	public void init() {
+		initSupporterMasterData ();
+		initUserSupporterData ();
+	}
+
 	// Supporter関連のマスターデータ取得
-	void initData() 
+	void initSupporterMasterData() 
 	{
 		var entityMasterTable = new SupporterMasterTable ();
 		entityMasterTable.Load ();
@@ -34,46 +39,84 @@ public class SupporterCtrl : MonoBehaviour {
 	}
 
 	// ユーザーデータからSupporterクラスを生成・管理
-	void initUserData() 
+	void initUserSupporterData() 
 	{
+		// ユーザーのテーブル構成
+		// ID / LV ... LV.0 = 未開放
 		// コスト情報を取得
 
-		// サポーターの種類を取得
+		// サポーターのマスターデータを取得
 		int availableSupportersNumber = _supporterMasterList.Count;
 
 		supporterNextLevelCoin = new int[availableSupportersNumber];
 		for (int i = 0; i < availableSupportersNumber; i++) {
-			float value = (float)_supporterMasterList [i].base_coin * _supporterLevelMasterList [i].multiple_rate_coin;
+			float value = (float)_supporterMasterList [i].base_coin * _supporterLevelMasterList[0].multiple_rate_coin;
 			supporterNextLevelCoin [i] = Mathf.FloorToInt (value);
 		}
 
 		supportersList = new List<Supporter>();
 
 		// 所持サポーター数
-		int count = 1;
-		int id = 1;
+		int count = 2;
+		int[] id = {1,2};
+		int[] lv = {1,5};
 		for (int i = 0; i < count; i++) {
-			Supporter sp = new Supporter ();
-			sp.initSupporter (id, 1);
-			Debug.Log ("SP ID:" + sp.id + " NAME:"+sp.name+"PPS:" + sp.pointPerSecond);
+			Supporter sp = getSupporterClass (id[i], lv[i]);
+			Debug.Log ("SP ID:" + sp.id + " NAME:"+sp.name+"PPS:"+sp.pointPerSecond);
 			supportersList.Add (sp);
 
 			// 解放済みサポーターのコストを更新する
-			supporterNextLevelCoin[id - 1] = sp.nextLevelCoin;
+			supporterNextLevelCoin[id[i] - 1] = sp.nextLevelCoin;
 		}
 	}
 
+	// idとレベルから、ppa、next_level_coinを算出し、supporterクラスを生成
+	Supporter getSupporterClass(int pId, int pLevel) 
+	{
+		Supporter sp = new Supporter ();
+
+		string name = _supporterMasterList [pId - 1].name;
+		float basePpa = _supporterMasterList [pId - 1].base_ppa;
+		float atkInt = _supporterMasterList [pId - 1].atk_interval;
+		int baseCoin = _supporterMasterList [pId - 1].base_coin;
+
+		string growthType = _supporterLevelMasterList [pId - 1].growth_type;
+
+		float multipleRatePpa = 1;
+		float multipleRateCoin = 1;
+
+		for (int i = 0; i < _supporterLevelMasterList.Count; i++) {
+			if (_supporterLevelMasterList[i].growth_type == growthType) {
+				if (_supporterLevelMasterList [i].level == pLevel) {
+					multipleRatePpa = _supporterLevelMasterList [i].multiple_rate_ppa;
+					multipleRateCoin = _supporterLevelMasterList [i].multiple_rate_coin;
+				}
+			}
+		}
+
+		sp.id = pId;
+		sp.level = pLevel;
+		sp.name = name;
+		sp.pointPerAttack = basePpa * multipleRatePpa;
+		sp.attackInterval = atkInt;
+		sp.pointPerSecond = sp.getPps (sp.attackInterval, sp.pointPerAttack);
+		sp.nextLevelCoin = Mathf.FloorToInt((float)baseCoin * multipleRateCoin);
+
+		return sp;
+	}
+
 	// サポーターのポイントを取得し、反映させる
-	void getSupporterValues() {
-		//		if (supportersList.Count <= 0) {
-		//			return;
-		//		}
-		//
-		//		float supportersPoint = 0.0f;
-		//		for (int i = 0; i < supportersList.Count; i++) {
-		//			supportersPoint += supportersList [i].getPointUpdate ();
-		//		}
-		//		sendPointToEnemy (supportersPoint, false);
+	public float getSupporterValues() {
+		if (supportersList.Count <= 0) {
+			return 0;
+		}
+	
+		float supportersPoint = 0.0f;
+		for (int i = 0; i < supportersList.Count; i++) {
+			supportersPoint += supportersList [i].getPointUpdate ();
+		}
+		return supportersPoint;
+
 	}
 
 }

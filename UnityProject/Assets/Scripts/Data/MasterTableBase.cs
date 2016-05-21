@@ -62,6 +62,7 @@ public class MasterBase
 
 	private void SetField(string key, string value) 
 	{
+		Debug.Log ("key: " + key + " value: " + value);
 		PropertyInfo propertyInfo = this.GetType ().GetProperty (key, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
 		if (propertyInfo.PropertyType == typeof(int))
