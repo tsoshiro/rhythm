@@ -55,11 +55,6 @@ public class GameCtrl : MonoBehaviour {
 	int killCount = 0;
 	int maxCombo = 0;
 
-	// Supporters
-	List<Supporter> supportersList;
-	// Level Cost Table
-	int[] supporterNextLevelCoin;
-
 	[Header("Circle Display Logic")]
 	Vector3 _movingCircleScale;
 
@@ -173,29 +168,29 @@ public class GameCtrl : MonoBehaviour {
 
 	// サポーター情報をセット
 	void setSupporters() {
-		// コスト情報を取得
-		// 仮にサポーターの種類は3種類だとしておく。
-		int availableSupportersNumber = 3;
-		supporterNextLevelCoin = new int[availableSupportersNumber];
-		// 仮設定
-		for (int i = 0; i < availableSupportersNumber; i++) {
-			supporterNextLevelCoin [i] = 100 * i;
-		}
-
-		supportersList = new List<Supporter>();
-
-		// 所持サポーター数
-		int count = 1;
-		int id = 1;
-		for (int i = 0; i < count; i++) {
-			Supporter sp = new Supporter ();
-			sp.initSupporter (id, 1);
-			Debug.Log ("SP ID:" + sp.id + " NAME:"+sp.name+"PPS:" + sp.pointPerSecond);
-			supportersList.Add (sp);
-
-			// 解放済みサポーターのコストを更新する
-			supporterNextLevelCoin[id - 1] = sp.nextLevelCoin;
-		}
+//		// コスト情報を取得
+//		// 仮にサポーターの種類は3種類だとしておく。
+//		int availableSupportersNumber = 3;
+//		supporterNextLevelCoin = new int[availableSupportersNumber];
+//		// 仮設定
+//		for (int i = 0; i < availableSupportersNumber; i++) {
+//			supporterNextLevelCoin [i] = 100 * i;
+//		}
+//
+//		supportersList = new List<Supporter>();
+//
+//		// 所持サポーター数
+//		int count = 1;
+//		int id = 1;
+//		for (int i = 0; i < count; i++) {
+//			Supporter sp = new Supporter ();
+//			sp.initSupporter (id, 1);
+//			Debug.Log ("SP ID:" + sp.id + " NAME:"+sp.name+"PPS:" + sp.pointPerSecond);
+//			supportersList.Add (sp);
+//
+//			// 解放済みサポーターのコストを更新する
+//			supporterNextLevelCoin[id - 1] = sp.nextLevelCoin;
+//		}
 	}
 
 	void showUserData() {
@@ -531,15 +526,15 @@ public class GameCtrl : MonoBehaviour {
 
 	// サポーターのポイントを取得し、反映させる
 	void getSupporterValues() {
-		if (supportersList.Count <= 0) {
-			return;
-		}
-
-		float supportersPoint = 0.0f;
-		for (int i = 0; i < supportersList.Count; i++) {
-			supportersPoint += supportersList [i].getPointUpdate ();
-		}
-		sendPointToEnemy (supportersPoint, false);
+//		if (supportersList.Count <= 0) {
+//			return;
+//		}
+//
+//		float supportersPoint = 0.0f;
+//		for (int i = 0; i < supportersList.Count; i++) {
+//			supportersPoint += supportersList [i].getPointUpdate ();
+//		}
+//		sendPointToEnemy (supportersPoint, false);
 	}
 
 	#region Move Meters
