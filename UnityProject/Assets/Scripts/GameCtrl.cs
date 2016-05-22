@@ -98,7 +98,7 @@ public class GameCtrl : MonoBehaviour {
 		// Ctrl
 		_timeCtrl.Init(this);
 
-		//COMMON
+		// COMMON
 		_movingCircleScale = _circle.transform.localScale;
 		_cubeMovingPosition = _cubeMoving.transform.position;
 		_cubeTargetScale = _cubeTarget.transform.localScale;
@@ -111,18 +111,17 @@ public class GameCtrl : MonoBehaviour {
 			enableCircle(false);
 		}
 
-		score = 0;
-
 		// 初期化処理
 		initUserData ();
 		showUserData ();
+		score = 0;
 
 		gameMode = GAME_MODE.PLAY;
 	}
 
 
-	public TextMesh _userLvLabelLabel;
-	public TextMesh _userPPTLabelLabel;
+	public TextMesh _userLvLabel;
+	public TextMesh _userPPTLabel;
 	public Text _nextLevelLabel;
 	public Text _purchaseBtnLabel;
 
@@ -172,8 +171,8 @@ public class GameCtrl : MonoBehaviour {
 	}
 
 	void showUserData() {
-		_userLvLabelLabel.text = "Lv: "+_userData.level;
-		_userPPTLabelLabel.text = "PPT: "+_userData.pointPerTap;
+		_userLvLabel.text = "Lv: "+_userData.level;
+		_userPPTLabel.text = "PPT: "+_userData.pointPerTap;
 
 		_nextLevelLabel.text = "Next Lv : " + _nextUserData.level + "\n"
 						+ "PPT : " + _nextUserData.pointPerTap;
@@ -281,10 +280,12 @@ public class GameCtrl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		if (gameMode != GAME_MODE.PLAY) {
-			return;
+		if (gameMode == GAME_MODE.PLAY) {
+			UpdatePlay();
 		}
+	}
 
+	void UpdatePlay() {
 		// 表示判定
 		if (display_mode == DISPLAY_MODE.CIRCLE) {
 			stretchCircle ();
@@ -302,15 +303,15 @@ public class GameCtrl : MonoBehaviour {
 		#elif UNITY_IOS || UNITY_ANDROID
 		if (Input.touchCount > 0) {
 		Touch singleTouch = Input.GetTouch (0);
-			if (singleTouch.phase == TouchPhase.Began) {
-				tap ();
-			}
+		if (singleTouch.phase == TouchPhase.Began) {
+		tap ();
+		}
 		}
 		#endif
 
 		getSupporterValues ();
 
-		showFPSDisplay ();
+		showFPSDisplay ();		
 	}
 
 	#region SETTINGS
@@ -378,7 +379,7 @@ public class GameCtrl : MonoBehaviour {
 		if (tapResult == TIMING.EXCELLENT || tapResult == TIMING.GREAT) {
 			comboCount++;
 		} else {
-			// 最大コンボかチェック
+			// コンボ失敗なら、最大コンボかチェック
 			checkMaxCombo();
 			comboCount = 0;
 		}
