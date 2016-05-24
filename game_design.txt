@@ -1,0 +1,42 @@
+【要件】
+タップタイタンズ的なRPG
+タップすれば進んでいくが、リズムに合わせてタップをする必要があり、タイミングが良ければ良いほど高得点
+仲間を増やして時間あたりの獲得ポイントを増やしていける
+BGMを設定できる
+BPMを変更できる
+
+ルール
+・タップをすると「ポイント」を「敵」に与える
+・ポイントが一定数たまると、「敵」が倒れて「コイン」がもらえる
+・コインで「レベル」を上げると、タップあたり獲得ポイントが増える。
+・コインで「サポートキャラ」を解放すると、タップしなくても自動で「ポイント」を稼いでくれる。
+・サポートキャラをレベル上げすると、1秒あたり獲得ポイントが増える。
+・敵は次第に強くなっていく。
+
+[項目]
+Settings
+- BPM
+
+Player
+- Coin
+- Point
+- Kill Count
+- Combo
+- Hero
+　- Level
+　- PPT (Point Per Tap)
+- Supporters
+　- Supporter
+　　- PPA (Point Per Attack)
+　　- Attack Interval
+　　- Level
+
+Enemy
+- Level
+- HP
+- Drop Coin
+
+Quest
+- Reward
+- Enemies List
+　- Enemy
