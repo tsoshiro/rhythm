@@ -41,3 +41,10 @@ Quest
 - Reward
 - Enemies List
 　- Enemy
+
+Skill
+- Effect type
+- Value
+
+Effect type
+- description
