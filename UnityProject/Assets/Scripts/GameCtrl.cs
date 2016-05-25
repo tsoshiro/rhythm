@@ -91,6 +91,15 @@ public class GameCtrl : MonoBehaviour {
 	public float SCALE_TIME 	= 0.2f;
 	public float RESULT_TEXT_SCALE_AMOUNT = 0.2f;
 
+	// 表示系
+	public TextMesh _userLvLabel;
+	public TextMesh _userPPTLabel;
+	public Text _nextLevelLabel;
+	public Text _purchaseBtnLabel;
+
+	UserData _userData;
+	UserData _nextUserData;
+
 	// Use this for initialization
 	void Start () {
 		Application.targetFrameRate = 60;
@@ -119,26 +128,9 @@ public class GameCtrl : MonoBehaviour {
 		gameMode = GAME_MODE.PLAY;
 	}
 
-
-	public TextMesh _userLvLabel;
-	public TextMesh _userPPTLabel;
-	public Text _nextLevelLabel;
-	public Text _purchaseBtnLabel;
-
-	UserData _userData;
-	UserData _nextUserData;
-
-	string PREF_USER_LEVEL = "UserLevel";
-	string PREF_USER_COIN = "UserCoin";
-	string PREF_USER_MAX_COMBO = "MaxCombo";
-	string PREF_KILL_COUNT = "KillCount";
-	string PREF_ENMEY_NUM = "EnemyNum";
-
-
-
 	void initUserData() {
 		// ユーザーレベル取得
-		int userLv = PlayerPrefs.GetInt (PREF_USER_LEVEL);
+		int userLv = PlayerPrefs.GetInt (Const.PREF_USER_LEVEL);
 		if (userLv == 0) {
 			userLv = 1;
 		}
@@ -152,14 +144,14 @@ public class GameCtrl : MonoBehaviour {
 		setSupporters ();
 
 		// 所持コイン取得
-		int userCoin = PlayerPrefs.GetInt (PREF_USER_COIN);
+		int userCoin = PlayerPrefs.GetInt (Const.PREF_USER_COIN);
 		_playerCtrl.addCoin (userCoin);
 
 		// 最大コンボ数取得
-		maxCombo = PlayerPrefs.GetInt(PREF_USER_MAX_COMBO);
+		maxCombo = PlayerPrefs.GetInt(Const.PREF_USER_MAX_COMBO);
 
 		// 討伐数取得
-		killCount = PlayerPrefs.GetInt (PREF_KILL_COUNT);
+		killCount = PlayerPrefs.GetInt (Const.PREF_KILL_COUNT);
 
 		// 敵取得
 		_enemyCtrl.initEnemyFromDB (killCount);
@@ -240,11 +232,11 @@ public class GameCtrl : MonoBehaviour {
 	}
 
 	void saveData() {
-		PlayerPrefs.SetInt (PREF_USER_LEVEL, _userData.level);
-		PlayerPrefs.SetInt (PREF_KILL_COUNT, killCount);
-		PlayerPrefs.SetInt (PREF_USER_COIN, _playerCtrl.getCoin ());
-		PlayerPrefs.SetInt (PREF_ENMEY_NUM, _enemyCtrl.getEnemyNum());
-		PlayerPrefs.SetInt (PREF_USER_MAX_COMBO, maxCombo);
+		PlayerPrefs.SetInt (Const.PREF_USER_LEVEL, _userData.level);
+		PlayerPrefs.SetInt (Const.PREF_KILL_COUNT, killCount);
+		PlayerPrefs.SetInt (Const.PREF_USER_COIN, _playerCtrl.getCoin ());
+		PlayerPrefs.SetInt (Const.PREF_ENMEY_NUM, _enemyCtrl.getEnemyNum());
+		PlayerPrefs.SetInt (Const.PREF_USER_MAX_COMBO, maxCombo);
 	}
 
 	public void resetSaveData() {
@@ -260,10 +252,10 @@ public class GameCtrl : MonoBehaviour {
 		_enemyCtrl.resetEnemyMAXHP ();
 		_enemyCtrl.initEnemyFromDB (killCount);
 
-		PlayerPrefs.SetInt (PREF_USER_LEVEL, 1);
-		PlayerPrefs.SetInt (PREF_KILL_COUNT, killCount);
-		PlayerPrefs.SetInt (PREF_USER_COIN, _playerCtrl.getCoin ());
-		PlayerPrefs.SetInt (PREF_ENMEY_NUM, 0);
+		PlayerPrefs.SetInt (Const.PREF_USER_LEVEL, 1);
+		PlayerPrefs.SetInt (Const.PREF_KILL_COUNT, killCount);
+		PlayerPrefs.SetInt (Const.PREF_USER_COIN, _playerCtrl.getCoin ());
+		PlayerPrefs.SetInt (Const.PREF_ENMEY_NUM, 0);
 	}
 
 	void FixedUpdate() {
