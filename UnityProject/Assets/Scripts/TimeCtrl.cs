@@ -31,7 +31,7 @@ public class TimeCtrl : MonoBehaviour {
 			float amari = timer - loopTime;
 			timer = 0;
 			timer += amari;
-			_gameCtrl.PlaySE(AudioCtrl.SE_KICK);
+			_gameCtrl.PlaySE(Const.SE_KICK);
 		}
 		rate = timer / loopTime;
 
@@ -99,10 +99,10 @@ public class TimeCtrl : MonoBehaviour {
 	public void initBeat(float pLeftTime = 0) {
 		startTime = Time.realtimeSinceStartup + pLeftTime;
 		targetTime = startTime + loopTime;
-		_gameCtrl.PlaySE (AudioCtrl.SE_KICK);
+		_gameCtrl.PlaySE (Const.SE_KICK);
 
 		if (_gameCtrl.isPlaySnare ()) {
-			_gameCtrl.PlaySE (AudioCtrl.SE_SNARE);
+			_gameCtrl.PlaySE (Const.SE_SNARE);
 		}
 	}
 

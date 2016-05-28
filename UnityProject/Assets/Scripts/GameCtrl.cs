@@ -188,7 +188,7 @@ public class GameCtrl : MonoBehaviour {
 		_playerCtrl.useCoin (useCoinValue);
 
 		// LvUP音を再生
-		PlaySE(AudioCtrl.SE_LV_UP);
+		PlaySE(Const.SE_LV_UP);
 
 		showUserData ();
 	}
@@ -398,7 +398,7 @@ public class GameCtrl : MonoBehaviour {
 
 	void showTapResult(TIMING pTapResult) {
 		string resultText = "";
-		int seNumber = AudioCtrl.SE_HAT_BAD;
+		int seNumber = Const.SE_HAT_BAD;
 		int addScore = 0;
 		float asc = 0.0f; // コンボ加算用float
 
@@ -413,26 +413,26 @@ public class GameCtrl : MonoBehaviour {
 		case TIMING.PERFECT:
 			resultText = "PERFECT!";
 			asc = getComboBonus (SCORE_VAL_PERFECT);
-			seNumber = AudioCtrl.SE_HAT_EXCELLENT;
+			seNumber = Const.SE_HAT_EXCELLENT;
 			break;
 		case TIMING.EXCELLENT:
 			resultText = "EXCELLENT!";
 			asc = getComboBonus (SCORE_VAL_PERFECT);
-			seNumber = AudioCtrl.SE_HAT_EXCELLENT;
+			seNumber = Const.SE_HAT_EXCELLENT;
 			break;
 		case TIMING.GREAT:
 			resultText = "GREAT!";
 			asc = getComboBonus (SCORE_VAL_PERFECT);
-			seNumber = AudioCtrl.SE_HAT_GREAT;
+			seNumber = Const.SE_HAT_GREAT;
 			break;
 		case TIMING.GOOD:
 			resultText = "GOOD!";
 			addScore += SCORE_VAL_GOOD;
-			seNumber = AudioCtrl.SE_HAT_GOOD;
+			seNumber = Const.SE_HAT_GOOD;
 			break;
 		case TIMING.BAD:
 			resultText = "BAD!";
-			seNumber = AudioCtrl.SE_HAT_BAD;
+			seNumber = Const.SE_HAT_BAD;
 			addScore += SCORE_VAL_BAD;
 			break;
 		}
@@ -490,7 +490,7 @@ public class GameCtrl : MonoBehaviour {
 		_enemyCtrl.spawnEnemy (killCount);
 
 		// 敵撃退音
-		PlaySE (AudioCtrl.SE_KILL_ENEMY);
+		PlaySE (Const.SE_KILL_ENEMY);
 
 		saveData ();
 	}
