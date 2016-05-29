@@ -7,6 +7,7 @@ public class Const {
 	public const string PREF_USER_MAX_COMBO = "MaxCombo";
 	public const string PREF_KILL_COUNT = "KillCount";
 	public const string PREF_ENMEY_NUM = "EnemyNum";
+	public const string PREF_SUPPORTER_LEVELS = "SupporterLevels";
 
 	public const int SE_KICK 			= 0;
 	public const int SE_HAT_BAD 		= 1;

@@ -57,16 +57,51 @@ public class SupporterCtrl : MonoBehaviour {
 		supportersList = new List<Supporter>();
 
 		// 所持サポーター数
-		int count = 2;
+		int[] supportersData = PlayerPrefsX.GetIntArray(Const.PREF_SUPPORTER_LEVELS);
+		if (supportersData.Length <= 0) {
+			supportersData = new int[availableSupportersNumber];
+			for (int i = 0; i < availableSupportersNumber; i++) {
+				supportersData [i] = 0;
+			}
+			PlayerPrefsX.SetIntArray (Const.PREF_SUPPORTER_LEVELS);
+		}
+
+		Dictionary<int, int> idLevel = new Dictionary<int,int> ();
+
+		// Sample Data
 		int[] id = {1,2};
 		int[] lv = {1,5};
-		for (int i = 0; i < count; i++) {
-			Supporter sp = getSupporterClass (id[i], lv[i]);
-			Debug.Log ("SP ID:" + sp.id + " NAME:"+sp.name+"PPS:"+sp.pointPerSecond);
-			supportersList.Add (sp);
 
-			// 解放済みサポーターのコストを更新する
-			supporterNextLevelCoin[id[i] - 1] = sp.nextLevelCoin;
+		for (int i = 0; i < supportersData.Length; i++) {
+			if (i + 1 == id [0]) {
+				supportersData [i] = lv [0];
+			}
+			if (i + 1 == id [1]) {
+				supportersData [i] = lv [1];
+			}				
+		}
+	
+
+		for (int i = 0; i < supportersData.Length; i++) {
+			if (supportersData [i] > 0) { // 解放済み
+				// クラスを生成
+				Supporter sp = getSupporterClass (id[i], lv[i]);
+				Debug.Log ("SP ID:" + sp.id + " NAME:"+sp.name+"PPS:"+sp.pointPerSecond);
+				supportersList.Add (sp);
+
+				// 解放済みサポーターのコストを更新する
+				supporterNextLevelCoin[id[i] - 1] = sp.nextLevelCoin;
+			
+			} else { //未開放
+				// 解放のためのコストを取得
+				idLevel.Add(i+1, _supporterMasterList[i].base_coin);
+			}
+		}
+
+		for (int i = 0; i < supportersData.Length; i++) {
+			SupporterMaster spMaster = _supporterMasterList [i];
+			Debug.Log ("ID: " + spMaster.id + " NAME: "+spMaster.name
+				+" LEVEL: "+supportersData[i]+" NEXT_COIN: "+supporterNextLevelCoin[i]);
 		}
 	}
 
