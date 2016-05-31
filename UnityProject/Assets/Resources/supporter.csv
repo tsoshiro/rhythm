@@ -1,6 +1,6 @@
 id,name,base_ppa,atk_interval,image_path,growth_type,base_coin
-1,アーチャー,400,3,,early,300
-2,ウィザード,450,4,,early,600
-3,ファイター,300,2,,normal,150
-4,シーフ,200,2,,late,100
-5,オーク,600,5,,late,1200
+1,アーチャー,400,3,archer,early,300
+2,ウィザード,450,4,wizard,early,600
+3,ファイター,300,2,fighter,normal,150
+4,シーフ,200,2,thief,late,100
+5,オーク,600,5,orc,late,1200
