@@ -7,6 +7,7 @@ public class Supporter {
 	public int level; //現在のレベル
 	public float pointPerSecond; // 現在の1秒あたりポイント
 	public int nextLevelCoin; // 次のレベルに必要なコイン
+	public Sprite image; // 画像
 
 	public float attackInterval; // pointPerSecondを元に何秒に1回攻撃するか
 	public float pointPerAttack; // 1回の攻撃につき、何ポイントダメージを与えるか
