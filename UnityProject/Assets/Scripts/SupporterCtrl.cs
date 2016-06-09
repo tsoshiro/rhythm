@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class SupporterCtrl : MonoBehaviour {
 	public GameCtrl _gameCtrl;
+	public ScrollCtrl _scrollCtrl;
+
+
 	List<SupporterMaster> _supporterMasterList = new List<SupporterMaster>();
 	List<SupporterLevelMaster> _supporterLevelMasterList = new List<SupporterLevelMaster>();
 
@@ -66,6 +69,10 @@ public class SupporterCtrl : MonoBehaviour {
 			PlayerPrefsX.SetIntArray (Const.PREF_SUPPORTER_LEVELS);
 		}
 
+		for (int i = 0; i < supportersData.Length; i++) {
+			Debug.Log ("SP DATA:"+supportersData [i]);
+		}
+
 		Dictionary<int, int> idLevel = new Dictionary<int,int> ();
 
 		// Sample Data
@@ -80,10 +87,9 @@ public class SupporterCtrl : MonoBehaviour {
 				supportersData [i] = lv [1];
 			}				
 		}
-	
 
 		for (int i = 0; i < supportersData.Length; i++) {
-			if (supportersData [i] > 0) { // 解放済み
+//			if (supportersData [i] > 0) { // 解放済み
 				// クラスを生成
 				Supporter sp = getSupporterClass (id[i], lv[i]);
 				Debug.Log ("SP ID:" + sp.id + " NAME:"+sp.name+"PPS:"+sp.pointPerSecond);
@@ -91,11 +97,11 @@ public class SupporterCtrl : MonoBehaviour {
 
 				// 解放済みサポーターのコストを更新する
 				supporterNextLevelCoin[id[i] - 1] = sp.nextLevelCoin;
-			
-			} else { //未開放
-				// 解放のためのコストを取得
-				idLevel.Add(i+1, _supporterMasterList[i].base_coin);
-			}
+//			
+//			} else { //未開放
+//				// 解放のためのコストを取得
+//				idLevel.Add(i+1, _supporterMasterList[i].base_coin);
+//			}
 		}
 
 		for (int i = 0; i < supportersData.Length; i++) {
@@ -103,6 +109,7 @@ public class SupporterCtrl : MonoBehaviour {
 			Debug.Log ("ID: " + spMaster.id + " NAME: "+spMaster.name
 				+" LEVEL: "+supportersData[i]+" NEXT_COIN: "+supporterNextLevelCoin[i]);
 		}
+		_scrollCtrl.InitSupportersList (supportersList);
 	}
 
 	// idとレベルから、ppa、next_level_coinを算出し、supporterクラスを生成
@@ -110,19 +117,21 @@ public class SupporterCtrl : MonoBehaviour {
 	{
 		Supporter sp = new Supporter ();
 
-		string name = _supporterMasterList [pId - 1].name;
-		float basePpa = _supporterMasterList [pId - 1].base_ppa;
-		float atkInt = _supporterMasterList [pId - 1].atk_interval;
-		int baseCoin = _supporterMasterList [pId - 1].base_coin;
+		string name 	= _supporterMasterList [pId - 1].name;
+		float basePpa 	= _supporterMasterList [pId - 1].base_ppa;
+		float atkInt	= _supporterMasterList [pId - 1].atk_interval;
+		int baseCoin 	= _supporterMasterList [pId - 1].base_coin;
+		Sprite image	= Resources.Load<Sprite>("images/supporters/"+_supporterMasterList [pId - 1].image_path) as Sprite;
 
 		string growthType = _supporterLevelMasterList [pId - 1].growth_type;
 
 		float multipleRatePpa = 1;
 		float multipleRateCoin = 1;
 
-		for (int i = 0; i < _supporterLevelMasterList.Count; i++) {
-			if (_supporterLevelMasterList[i].growth_type == growthType) {
-				if (_supporterLevelMasterList [i].level == pLevel) {
+		if (pLevel >= 1) {
+			for (int i = 0; i < _supporterLevelMasterList.Count; i++) {
+				if (_supporterLevelMasterList [i].growth_type == growthType &&
+				    _supporterLevelMasterList [i].level == pLevel) {
 					multipleRatePpa = _supporterLevelMasterList [i].multiple_rate_ppa;
 					multipleRateCoin = _supporterLevelMasterList [i].multiple_rate_coin;
 				}
@@ -136,6 +145,7 @@ public class SupporterCtrl : MonoBehaviour {
 		sp.attackInterval = atkInt;
 		sp.pointPerSecond = sp.getPps (sp.attackInterval, sp.pointPerAttack);
 		sp.nextLevelCoin = Mathf.FloorToInt((float)baseCoin * multipleRateCoin);
+		sp.image = image;
 
 		return sp;
 	}
