@@ -68,13 +68,7 @@ public class SupporterCtrl : MonoBehaviour {
 			}
 			PlayerPrefsX.SetIntArray (Const.PREF_SUPPORTER_LEVELS);
 		}
-
-		for (int i = 0; i < supportersData.Length; i++) {
-			Debug.Log ("SP DATA:"+supportersData [i]);
-		}
-
-		Dictionary<int, int> idLevel = new Dictionary<int,int> ();
-
+			
 		// Sample Data
 		int[] id = {1,2};
 		int[] lv = {1,5};
@@ -82,26 +76,37 @@ public class SupporterCtrl : MonoBehaviour {
 		for (int i = 0; i < supportersData.Length; i++) {
 			if (i + 1 == id [0]) {
 				supportersData [i] = lv [0];
-			}
-			if (i + 1 == id [1]) {
+			} else if (i + 1 == id [1]) {
 				supportersData [i] = lv [1];
-			}				
+			} else {
+				supportersData [i] = 0;
+			}			
 		}
 
 		for (int i = 0; i < supportersData.Length; i++) {
-//			if (supportersData [i] > 0) { // 解放済み
-				// クラスを生成
-				Supporter sp = getSupporterClass (id[i], lv[i]);
-				Debug.Log ("SP ID:" + sp.id + " NAME:"+sp.name+"PPS:"+sp.pointPerSecond);
-				supportersList.Add (sp);
+			Debug.Log ("SP DATA:"+supportersData [i]);
+		}
 
+		for (int i = 0; i < supportersData.Length; i++) {
+			// クラスを生成
+			int aLv;
+
+			// 解放済みサポーターか判定
+			bool aIsReleased = (supportersData [i] > 0) ? true : false;
+			if (aIsReleased) {
+				aLv = lv [i];
+			} else {
+				aLv = 0;
+			}
+
+			Supporter sp = getSupporterClass (i+1, aLv);
+			Debug.Log ("SP ID:" + sp.id + " NAME:"+sp.name+"PPS:"+sp.pointPerSecond);
+			supportersList.Add (sp);
+
+			if (aIsReleased) {
 				// 解放済みサポーターのコストを更新する
-				supporterNextLevelCoin[id[i] - 1] = sp.nextLevelCoin;
-//			
-//			} else { //未開放
-//				// 解放のためのコストを取得
-//				idLevel.Add(i+1, _supporterMasterList[i].base_coin);
-//			}
+				supporterNextLevelCoin [id [i] - 1] = sp.nextLevelCoin;
+			}
 		}
 
 		for (int i = 0; i < supportersData.Length; i++) {
@@ -121,7 +126,12 @@ public class SupporterCtrl : MonoBehaviour {
 		float basePpa 	= _supporterMasterList [pId - 1].base_ppa;
 		float atkInt	= _supporterMasterList [pId - 1].atk_interval;
 		int baseCoin 	= _supporterMasterList [pId - 1].base_coin;
-		Sprite image	= Resources.Load<Sprite>("images/supporters/"+_supporterMasterList [pId - 1].image_path) as Sprite;
+		string imagePath = "images/supporters/" + _supporterMasterList [pId - 1].image_path;
+
+		Sprite image	= Resources.Load<Sprite>(imagePath) as Sprite;
+		if (image != null) {
+			Debug.Log ("imagePath: " + imagePath + " successfully loaded! " +image);
+		}
 
 		string growthType = _supporterLevelMasterList [pId - 1].growth_type;
 
