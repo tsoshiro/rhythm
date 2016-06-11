@@ -32,12 +32,16 @@ public class GameCtrl : MonoBehaviour {
 	public TextMesh _killCountLabel;
 	public TextMesh _damageText;
 
+	// サポーターリスト
+	public GameObject _supporterScrollView;
+
 	[Header("Game Settings")]
 	public GAME_MODE gameMode = GAME_MODE.STAND_BY;
 	public enum GAME_MODE
 	{
 		STAND_BY,
 		PLAY,
+		PAUSE,
 		DEBUG,
 	}
 
@@ -96,6 +100,7 @@ public class GameCtrl : MonoBehaviour {
 	public TextMesh _userPPTLabel;
 	public Text _nextLevelLabel;
 	public Text _purchaseBtnLabel;
+	public Button _openSupporterListButton;
 
 	UserData _userData;
 	UserData _nextUserData;
@@ -192,6 +197,22 @@ public class GameCtrl : MonoBehaviour {
 
 		showUserData ();
 	}
+
+	// サポーターの解放/レベルアップリストを開く
+	public void openSupporterList() {
+		gameMode = GAME_MODE.PAUSE;
+		_supporterScrollView.SetActive(true);
+
+		_openSupporterListButton.gameObject.SetActive(false);
+	}
+
+	// サポーターの解放/レベルップリストを閉じる
+	public void closeSupporterList() {
+		_supporterScrollView.SetActive(false);
+		gameMode = GAME_MODE.PLAY;
+
+		_openSupporterListButton.gameObject.SetActive(true);
+	}
 		
 	// サポーターを解放/レベルアップ(引数にはサポーターのID)
 	public void purchaseSupporter(int pId) {
@@ -259,7 +280,8 @@ public class GameCtrl : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
-		if (gameMode != GAME_MODE.PLAY) {
+		if (gameMode != GAME_MODE.PLAY &&
+		    gameMode != GAME_MODE.PAUSE) {
 			return;
 		}
 
@@ -272,7 +294,8 @@ public class GameCtrl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		if (gameMode == GAME_MODE.PLAY) {
+		if (gameMode == GAME_MODE.PLAY ||
+		    gameMode == GAME_MODE.PAUSE) {
 			UpdatePlay();
 		}
 	}
@@ -285,22 +308,32 @@ public class GameCtrl : MonoBehaviour {
 			moveCube ();
 		}
 
-		// タップを判定する
-		#if UNITY_EDITOR
-		if (Input.GetMouseButtonDown (0) ||
-			Input.GetKeyDown(KeyCode.Space))
+		if (gameMode == GAME_MODE.PLAY)
 		{
-			tap ();
-		}
-		#elif UNITY_IOS || UNITY_ANDROID
-		if (Input.touchCount > 0) {
-		Touch singleTouch = Input.GetTouch (0);
-		if (singleTouch.phase == TouchPhase.Began) {
-		tap ();
-		}
-		}
-		#endif
+			// タップを判定する
+#if UNITY_EDITOR
+			if (Input.GetMouseButtonDown(0) ||
+				Input.GetKeyDown(KeyCode.Space))
+			{
+				Vector2 _touchPosition = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
+				if (isTapCorrectArea(_touchPosition)) {
+					tap();
+				}
 
+			}
+
+#elif UNITY_IOS || UNITY_ANDROID
+			if (Input.touchCount > 0) {
+				Touch singleTouch = Input.GetTouch (0);
+				if (singleTouch.phase == TouchPhase.Began) {
+					Vector2 _touchPosition = new Vector2(singleTouch.position.x, Screen.height - singleTouch.position.y);
+					if (isTapCorrectArea(_touchPosition) {
+						tap ();
+					}
+				}
+			}
+#endif
+		}
 		getSupporterValues ();
 
 		showFPSDisplay ();		
@@ -361,6 +394,27 @@ public class GameCtrl : MonoBehaviour {
 		fpsDisplay.text = fps.ToString ("F2");
 	}
 	#endregion
+
+	//範囲指定
+	Rect rect = new Rect(0, 100, 320, 310);
+	GameObject gui; //短形参考用GUI
+
+	// タップした位置が所定の範囲内かを判定する
+	bool isTapCorrectArea(Vector2 pTouchPosition) {
+		if (pTouchPosition.x >= rect.xMin &&
+		    pTouchPosition.x < rect.xMax &&
+		    pTouchPosition.y >= rect.yMin &&
+		    pTouchPosition.y < rect.yMax)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	//void OnGUI() {
+		//
+		//GUI.Box(rect, "");
+	//}
 
 	void tap() {
 		// タップのタイミングが、Timerとどれくらいずれているかを検証。近さに応じてBAD/GOOD/GREAT/EXCELLENTの4段階評価を表示する
