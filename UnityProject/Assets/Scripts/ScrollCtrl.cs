@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using System.Collections.Generic;
 
 public class ScrollCtrl : MonoBehaviour {
@@ -8,8 +9,11 @@ public class ScrollCtrl : MonoBehaviour {
 	[SerializeField]
 	RectTransform prefab = null;
 
+	GameCtrl _gameCtrl;
+
 	// Use this for initialization
 	void Start () {
+		_gameCtrl = GameObject.Find("GameCtrl").GetComponent<GameCtrl>();
 	}
 
  	// サポーターリストを作成するコード
@@ -23,6 +27,10 @@ public class ScrollCtrl : MonoBehaviour {
 			item.SetParent (transform, false);
 
 			// Setting
+			//Button btn = item.GetComponentInChildren<Button>();
+			//UnityAction<int> onClickAction = _gameCtrl.purchaseSupporter(aSupporter.id);
+			//btn.onClick.AddListener();
+
 			Text[] text = item.GetComponentsInChildren<Text> ();
 			for (int j = 0; j < text.Length; j++) {
 				if (text [j].name == "Name") { // Name

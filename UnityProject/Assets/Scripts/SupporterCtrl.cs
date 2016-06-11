@@ -171,7 +171,6 @@ public class SupporterCtrl : MonoBehaviour {
 			supportersPoint += supportersList [i].getPointUpdate ();
 		}
 		return supportersPoint;
-
 	}
 
 }
