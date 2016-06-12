@@ -27,9 +27,12 @@ public class ScrollCtrl : MonoBehaviour {
 			item.SetParent (transform, false);
 
 			// Setting
-			//Button btn = item.GetComponentInChildren<Button>();
-			//UnityAction<int> onClickAction = _gameCtrl.purchaseSupporter(aSupporter.id);
-			//btn.onClick.AddListener();
+			Button btn = item.GetComponentInChildren<Button>();
+			int aId = aSupporter.id;
+			btn.onClick.AddListener(() =>
+			{
+				_gameCtrl.purchaseSupporter(aId);
+			});
 
 			Text[] text = item.GetComponentsInChildren<Text> ();
 			for (int j = 0; j < text.Length; j++) {
