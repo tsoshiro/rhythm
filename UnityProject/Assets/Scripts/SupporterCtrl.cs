@@ -6,7 +6,6 @@ public class SupporterCtrl : MonoBehaviour {
 	public GameCtrl _gameCtrl;
 	public ScrollCtrl _scrollCtrl;
 
-
 	List<SupporterMaster> _supporterMasterList = new List<SupporterMaster>();
 	List<SupporterLevelMaster> _supporterLevelMasterList = new List<SupporterLevelMaster>();
 
@@ -14,7 +13,6 @@ public class SupporterCtrl : MonoBehaviour {
 	List<Supporter> supportersList;
 	// Level Cost Table
 	int[] supporterNextLevelCoin;
-
 
 	// Use this for initialization
 	void Start () {
@@ -172,5 +170,4 @@ public class SupporterCtrl : MonoBehaviour {
 		}
 		return supportersPoint;
 	}
-
 }
