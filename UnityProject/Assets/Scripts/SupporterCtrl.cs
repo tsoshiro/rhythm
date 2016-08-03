@@ -49,6 +49,7 @@ public class SupporterCtrl : MonoBehaviour {
 		// サポーターのマスターデータを取得
 		int availableSupportersNumber = _supporterMasterList.Count;
 
+		// 基本のコストを取得
 		supporterNextLevelCoin = new int[availableSupportersNumber];
 		for (int i = 0; i < availableSupportersNumber; i++) {
 			float value = (float)_supporterMasterList [i].base_coin * _supporterLevelMasterList[0].multiple_rate_coin;
@@ -57,9 +58,9 @@ public class SupporterCtrl : MonoBehaviour {
 
 		supportersList = new List<Supporter>();
 
-		// 所持サポーター数
+		// 所持サポーター情報を取得
 		int[] supportersData = PlayerPrefsX.GetIntArray(Const.PREF_SUPPORTER_LEVELS);
-		if (supportersData.Length <= 0) {
+		if (supportersData.Length <= 0) { // PlayerPrefsが空の場合
 			supportersData = new int[availableSupportersNumber];
 			for (int i = 0; i < availableSupportersNumber; i++) {
 				supportersData [i] = 0;
@@ -70,7 +71,6 @@ public class SupporterCtrl : MonoBehaviour {
 		// Sample Data
 		int[] id = {1,2};
 		int[] lv = {1,5};
-
 		for (int i = 0; i < supportersData.Length; i++) {
 			if (i + 1 == id [0]) {
 				supportersData [i] = lv [0];
@@ -169,5 +169,24 @@ public class SupporterCtrl : MonoBehaviour {
 			supportersPoint += supportersList [i].getPointUpdate ();
 		}
 		return supportersPoint;
+	}
+
+	public Supporter raiseSupporterLevel(int pId) {
+		if (pId == 0)
+		{
+			return null;
+		}
+
+		// LV UP後のデータを取得
+		int lvNow = supportersList[pId].level;
+
+		Supporter sp = getSupporterClass(pId, lvNow + 1);
+		supportersList[pId] = sp;
+
+		// 次のLVまでのコストを取得
+		supporterNextLevelCoin[pId - 1] = sp.nextLevelCoin;
+
+		// 表記を更新
+		return sp;
 	}
 }

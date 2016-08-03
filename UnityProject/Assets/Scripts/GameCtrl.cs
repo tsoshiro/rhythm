@@ -233,8 +233,8 @@ public class GameCtrl : MonoBehaviour {
 
 	void purchaseNewSupporter(int pId) {
 		// サポータークラスのインスタンスを生成
-
 		// 初期ステータスを設定
+		Supporter sp = _supporterCtrl.raiseSupporterLevel(pId);
 
 		// サポーターリストに追加する
 	}
