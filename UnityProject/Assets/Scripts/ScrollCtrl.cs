@@ -39,6 +39,13 @@ public class ScrollCtrl : MonoBehaviour {
 			spPanel.init(aSupporter);
 
 			itemList.Add(spPanel);
-		}	
+		}
+	}
+
+	public void updateSupportersInfo(Supporter pSp) {
+		//for (int i = 0; i < itemList.Count; i++) {
+		//	if (itemList[i]
+		//}
+		itemList[pSp.id-1].setInformation(pSp);
 	}
 }

@@ -217,24 +217,35 @@ public class GameCtrl : MonoBehaviour {
 	// サポーターを解放/レベルアップ(引数にはサポーターのID)
 	public void purchaseSupporter(int pId) {
 		// 購入チェック
-		int useCoinValue = 0;
+		int useCoinValue = _supporterCtrl.getSupporterCost(pId);
+		Debug.Log("COIN:" + _playerCtrl.getCoin() + " supporterCost:" + useCoinValue);
 		if (_playerCtrl.getCoin () < useCoinValue) {
 			Debug.Log ("CAN'T BUY");
 			return;
 		}
 
-		// サポーターを解放済みならレベルップ/そうでないなら解放
-		if (isAvailableSupporter (pId)) {
-			purchaseSupporterLevel (pId);
+		if (_supporterCtrl.raiseSupporterLevel(pId))
+		{
+			Debug.Log("SUCCESS");
 		} else {
-			purchaseNewSupporter (pId);
+			Debug.Log("FAILED");
+			return;
 		}
+
+		// コイン消費
+		_playerCtrl.useCoin(useCoinValue);
+
+		// サポーターを解放済みならレベルップ/そうでないなら解放
+		//if (isAvailableSupporter (pId)) {
+		//	purchaseSupporterLevel (pId);
+		//} else {
+		//	purchaseNewSupporter (pId);
+		//}
 	}
 
 	void purchaseNewSupporter(int pId) {
 		// サポータークラスのインスタンスを生成
 		// 初期ステータスを設定
-		Supporter sp = _supporterCtrl.raiseSupporterLevel(pId);
 
 		// サポーターリストに追加する
 	}

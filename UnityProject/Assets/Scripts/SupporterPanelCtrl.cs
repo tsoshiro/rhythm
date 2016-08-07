@@ -14,6 +14,21 @@ public class SupporterPanelCtrl : MonoBehaviour {
 	}
 
 	public void init(Supporter pSupporter) {
+		setTexts(pSupporter);
+
+		// 画像を当てる
+		for (int j = 0; j < this.transform.childCount; j++)
+		{
+			Debug.Log("item.name: " + this.transform.GetChild(j).name);
+			if (this.transform.GetChild(j).name == "Image")
+			{
+				Image img = this.transform.GetChild(j).GetComponent<Image>();
+				img.sprite = pSupporter.image;
+			}
+		}
+	}
+
+	void setTexts(Supporter pSupporter) {
 		Text[] text = this.GetComponentsInChildren<Text>();
 		for (int j = 0; j < text.Length; j++)
 		{
@@ -29,26 +44,11 @@ public class SupporterPanelCtrl : MonoBehaviour {
 				text[j].text = pSupporter.nextLevelCoin + " COIN";
 			}
 		}
-
-		// 画像を当てる
-		for (int j = 0; j < this.transform.childCount; j++)
-		{
-			Debug.Log("item.name: " + this.transform.GetChild(j).name);
-			if (this.transform.GetChild(j).name == "Image")
-			{
-				Image img = this.transform.GetChild(j).GetComponent<Image>();
-				img.sprite = pSupporter.image;
-			}
-		}
 	}
 
 	// Update is called once per frame
-	void Update () {
-	}
 
-	void setInformation(Supporter pSupporter) {
-		_name.text = pSupporter.name;
-		_pps.text = pSupporter.pointPerSecond.ToString();
-		_nextCoin.text = pSupporter.nextLevelCoin.ToString();
+	public void setInformation(Supporter pSupporter) {
+		setTexts(pSupporter);
 	}
 }

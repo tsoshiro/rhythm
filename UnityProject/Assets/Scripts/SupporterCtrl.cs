@@ -171,22 +171,29 @@ public class SupporterCtrl : MonoBehaviour {
 		return supportersPoint;
 	}
 
-	public Supporter raiseSupporterLevel(int pId) {
+	public int getSupporterCost(int pId) {
+		return supporterNextLevelCoin[pId - 1];
+	}
+
+	public bool raiseSupporterLevel(int pId) {
+		Debug.Log("raiseSupporterLevel.pId:" + pId);
 		if (pId == 0)
 		{
-			return null;
+			return false;
 		}
 
 		// LV UP後のデータを取得
-		int lvNow = supportersList[pId].level;
+		int lvNow = supportersList[pId - 1].level;
 
 		Supporter sp = getSupporterClass(pId, lvNow + 1);
-		supportersList[pId] = sp;
+		supportersList[pId - 1] = sp;
 
 		// 次のLVまでのコストを取得
 		supporterNextLevelCoin[pId - 1] = sp.nextLevelCoin;
 
 		// 表記を更新
-		return sp;
+		_scrollCtrl.updateSupportersInfo(sp);
+
+		return true;
 	}
 }
