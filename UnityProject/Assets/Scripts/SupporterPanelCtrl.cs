@@ -19,7 +19,6 @@ public class SupporterPanelCtrl : MonoBehaviour {
 		// 画像を当てる
 		for (int j = 0; j < this.transform.childCount; j++)
 		{
-			Debug.Log("item.name: " + this.transform.GetChild(j).name);
 			if (this.transform.GetChild(j).name == "Image")
 			{
 				Image img = this.transform.GetChild(j).GetComponent<Image>();

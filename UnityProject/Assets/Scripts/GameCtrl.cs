@@ -108,6 +108,7 @@ public class GameCtrl : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Application.targetFrameRate = 60;
+		QualitySettings.vSyncCount = 0;
 
 		// Ctrl
 		_timeCtrl.Init(this);
