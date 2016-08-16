@@ -13,6 +13,7 @@ public class SupporterCtrl : MonoBehaviour {
 	List<Supporter> supportersList;
 	// Level Cost Table
 	int[] supporterNextLevelCoin;
+	int[] supportersData;
 
 	// Use this for initialization
 	void Start () {
@@ -59,26 +60,13 @@ public class SupporterCtrl : MonoBehaviour {
 		supportersList = new List<Supporter>();
 
 		// 所持サポーター情報を取得
-		int[] supportersData = PlayerPrefsX.GetIntArray(Const.PREF_SUPPORTER_LEVELS);
+		supportersData = PlayerPrefsX.GetIntArray(Const.PREF_SUPPORTER_LEVELS);
 		if (supportersData.Length <= 0) { // PlayerPrefsが空の場合
 			supportersData = new int[availableSupportersNumber];
 			for (int i = 0; i < availableSupportersNumber; i++) {
 				supportersData [i] = 0;
 			}
 			PlayerPrefsX.SetIntArray (Const.PREF_SUPPORTER_LEVELS);
-		}
-			
-		// Sample Data
-		int[] id = {1,2};
-		int[] lv = {1,5};
-		for (int i = 0; i < supportersData.Length; i++) {
-			if (i + 1 == id [0]) {
-				supportersData [i] = lv [0];
-			} else if (i + 1 == id [1]) {
-				supportersData [i] = lv [1];
-			} else {
-				supportersData [i] = 0;
-			}			
 		}
 
 		for (int i = 0; i < supportersData.Length; i++) {
@@ -92,7 +80,7 @@ public class SupporterCtrl : MonoBehaviour {
 			// 解放済みサポーターか判定
 			bool aIsReleased = (supportersData [i] > 0) ? true : false;
 			if (aIsReleased) {
-				aLv = lv [i];
+				aLv = supportersData [i];
 			} else {
 				aLv = 0;
 			}
@@ -103,7 +91,7 @@ public class SupporterCtrl : MonoBehaviour {
 
 			if (aIsReleased) {
 				// 解放済みサポーターのコストを更新する
-				supporterNextLevelCoin [id [i] - 1] = sp.nextLevelCoin;
+				supporterNextLevelCoin [i] = sp.nextLevelCoin;
 			}
 		}
 
@@ -175,6 +163,7 @@ public class SupporterCtrl : MonoBehaviour {
 		return supporterNextLevelCoin[pId - 1];
 	}
 
+	// 現在のLVに+1
 	public bool raiseSupporterLevel(int pId) {
 		Debug.Log("raiseSupporterLevel.pId:" + pId);
 		if (pId == 0)
@@ -184,16 +173,42 @@ public class SupporterCtrl : MonoBehaviour {
 
 		// LV UP後のデータを取得
 		int lvNow = supportersList[pId - 1].level;
+		if (setSupporterLevel(pId, lvNow + 1))
+		{
+			return true;
+		}
+		return false;
+	}
 
-		Supporter sp = getSupporterClass(pId, lvNow + 1);
+	// LVを指定
+	public bool setSupporterLevel(int pId, int pLevel) {
+		Supporter sp = getSupporterClass(pId, pLevel);
 		supportersList[pId - 1] = sp;
 
 		// 次のLVまでのコストを取得
 		supporterNextLevelCoin[pId - 1] = sp.nextLevelCoin;
+
+		// PlayerPrefsにセーブ
+		supportersData[pId - 1] = sp.level;
+		saveSupporterData();
 
 		// 表記を更新
 		_scrollCtrl.updateSupportersInfo(sp);
 
 		return true;
 	}
+
+	void saveSupporterData() {
+		PlayerPrefsX.SetIntArray(Const.PREF_SUPPORTER_LEVELS, supportersData);
+	}
+
+	#region debug
+	public void resetSupporter() {
+		for (int i = 0; i < supportersData.Length; i++) {
+			supportersData[i] = 0;
+			setSupporterLevel(i + 1, 0);
+		}
+		saveSupporterData();
+	}
+	#endregion
 }

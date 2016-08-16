@@ -85,7 +85,7 @@ public class EnemyCtrl : MonoBehaviour {
 		_hpCtrl.initHp (hp);
 		_hpCtrl.setValue (hp);
 
-		dropCoin = (int) ((float)_enemyMasterList[startId].drop_coin * _enemyLevelMasterList [lv - 1].multiple_rate);
+		dropCoin = (int) ((float)_enemyMasterList[startId].drop_coin * _enemyLevelMasterList [lv - 1].level);
 		imagePath = _enemyMasterList [startId].image_path;
 
 		Debug.Log ("id:" + startId + " lv:" + lv + " hpBase:" + hpBase + " hpLvRate:" + hpLvRate + " hp:" + hp+" drop_coin:"+dropCoin+" image_path:"+imagePath);

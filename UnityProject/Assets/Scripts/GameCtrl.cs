@@ -235,6 +235,9 @@ public class GameCtrl : MonoBehaviour {
 		// コイン消費
 		_playerCtrl.useCoin(useCoinValue);
 
+		// セーブ
+
+
 		// サポーターを解放済みならレベルップ/そうでないなら解放
 		//if (isAvailableSupporter (pId)) {
 		//	purchaseSupporterLevel (pId);
@@ -284,6 +287,8 @@ public class GameCtrl : MonoBehaviour {
 		_enemyCtrl.resetEnemyMAXHP ();
 		_enemyCtrl.initEnemyFromDB (killCount);
 
+		_supporterCtrl.resetSupporter();
+
 		PlayerPrefs.SetInt (Const.PREF_USER_LEVEL, 1);
 		PlayerPrefs.SetInt (Const.PREF_KILL_COUNT, killCount);
 		PlayerPrefs.SetInt (Const.PREF_USER_COIN, _playerCtrl.getCoin ());
@@ -322,28 +327,28 @@ public class GameCtrl : MonoBehaviour {
 		if (gameMode == GAME_MODE.PLAY)
 		{
 			// タップを判定する
-#if UNITY_EDITOR
 			if (Input.GetMouseButtonDown(0) ||
 				Input.GetKeyDown(KeyCode.Space))
 			{
 				Vector2 _touchPosition = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
-				if (isTapCorrectArea(_touchPosition)) {
+				if (isTapCorrectArea(_touchPosition))
+				{
 					tap();
 				}
 
 			}
 
-#elif UNITY_IOS || UNITY_ANDROID
-			if (Input.touchCount > 0) {
-				Touch singleTouch = Input.GetTouch (0);
-				if (singleTouch.phase == TouchPhase.Began) {
-					Vector2 _touchPosition = new Vector2(singleTouch.position.x, Screen.height - singleTouch.position.y);
-					if (isTapCorrectArea(_touchPosition) {
-						tap ();
-					}
-				}
-			}
-#endif
+//#elif UNITY_IOS || UNITY_ANDROID
+//			if (Input.touchCount > 0) {
+//				Touch singleTouch = Input.GetTouch (0);
+//				if (singleTouch.phase == TouchPhase.Began) {
+//					Vector2 _touchPosition = new Vector2(singleTouch.position.x, Screen.height - singleTouch.position.y);
+//			if (isTapCorrectArea(_touchPosition)) {
+//						tap ();
+//					}
+//				}
+//			}
+//#endif
 		}
 		getSupporterValues ();
 
