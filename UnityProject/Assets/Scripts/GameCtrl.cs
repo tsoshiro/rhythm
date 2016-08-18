@@ -112,6 +112,7 @@ public class GameCtrl : MonoBehaviour {
 
 		// Ctrl
 		_timeCtrl.Init(this);
+		_tapCtrl = this.GetComponentInChildren<TapCtrl>();
 
 		// COMMON
 		_movingCircleScale = _circle.transform.localScale;
@@ -176,9 +177,9 @@ public class GameCtrl : MonoBehaviour {
 						+ "PPT : " + _nextUserData.pointPerTap;
 		_purchaseBtnLabel.text = "LEVEL UP!\n" + _userData.nextLevelCoin + " COIN";
 
-		_maxComboLabel.text = "Max Combo: " + maxCombo;
+		_maxComboLabel.text = "MaxCombo:" + maxCombo;
 
-		_killCountLabel.text = "Kill Count: " + killCount;
+		_killCountLabel.text = "Kill:" + killCount;
 	}
 
 	public void purchasePlayerLevel() {
@@ -412,12 +413,11 @@ public class GameCtrl : MonoBehaviour {
 	}
 	#endregion
 
-	//範囲指定
-	Rect rect = new Rect(0, 100, 320, 310);
-	GameObject gui; //短形参考用GUI
+	TapCtrl _tapCtrl;
 
 	// タップした位置が所定の範囲内かを判定する
 	bool isTapCorrectArea(Vector2 pTouchPosition) {
+		Rect rect = _tapCtrl.getTapArea();
 		if (pTouchPosition.x >= rect.xMin &&
 		    pTouchPosition.x < rect.xMax &&
 		    pTouchPosition.y >= rect.yMin &&
@@ -427,11 +427,6 @@ public class GameCtrl : MonoBehaviour {
 		}
 		return false;
 	}
-
-	//void OnGUI() {
-		//
-		//GUI.Box(rect, "");
-	//}
 
 	void tap() {
 		// タップのタイミングが、Timerとどれくらいずれているかを検証。近さに応じてBAD/GOOD/GREAT/EXCELLENTの4段階評価を表示する

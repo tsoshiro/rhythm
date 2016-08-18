@@ -12,6 +12,8 @@ public class EnemyCtrl : MonoBehaviour {
 	int dropCoin;
 	string imagePath;
 
+	Vector3 appear_position = new Vector3(0, -1, 1);
+	Vector3 standby_position = new Vector3(0, -1, 10);
 	public GameObject _enemies;
 	public GameObject[] _enemiesArray;
 	int enemyNum = 0;
@@ -91,14 +93,14 @@ public class EnemyCtrl : MonoBehaviour {
 		//Debug.Log ("id:" + startId + " lv:" + lv + " hpBase:" + hpBase + " hpLvRate:" + hpLvRate + " hp:" + hp+" drop_coin:"+dropCoin+" image_path:"+imagePath);
 		//Sprite sp = Resources.Load<Sprite> (imagePath);
 
-		//for (int i = 0; i < _enemiesArray.Length; i++) {
-		//	if (i == enemyNum) {
-		//		_enemiesArray [i].GetComponent<SpriteRenderer> ().sprite = sp;
-		//		iTween.FadeTo (_enemiesArray [i], iTween.Hash ("a", 1, "time", 0.5f));
-		//	} else {
-		//		iTween.FadeTo (_enemiesArray [i], iTween.Hash ("a", 0, "time", 0.5f));
-		//	}
-		//}
+		for (int i = 0; i < _enemiesArray.Length; i++) {
+			if (i == enemyNum) {
+				iTween.MoveTo(_enemiesArray[i], iTween.Hash("position", appear_position, "time",  0.2f, "islocal", true));
+			} else {
+				_enemiesArray[i].transform.localPosition = standby_position;
+				//iTween.MoveTo(_enemiesArray[i], appear_position, 0.2f);
+			}
+		}
 	}
 
 	public int getEnemyNum() {

@@ -17,7 +17,7 @@ public class HpCtrl : MonoBehaviour {
 		nowHp = pNowHp;
 
 		float rate = nowHp / maxHp;
-		_hpText.text = "HP: "+nowHp+"/"+maxHp;
+		_hpText.text = nowHp+"/"+maxHp;
 		_hpBar.value = rate;
 	}
 }
