@@ -170,16 +170,17 @@ public class GameCtrl : MonoBehaviour {
 	}
 
 	void showUserData() {
-		_userLvLabel.text = "Lv: "+_userData.level;
-		_userPPTLabel.text = "PPT: "+_userData.pointPerTap;
+		//_userLvLabel.text = "Lv: "+_userData.level;
+		//_userPPTLabel.text = "PPT: "+_userData.pointPerTap;
 
-		_nextLevelLabel.text = "Next Lv : " + _nextUserData.level + "\n"
-						+ "PPT : " + _nextUserData.pointPerTap;
+		//_nextLevelLabel.text = "Next Lv : " + _nextUserData.level + "\n"
+		//				+ "PPT : " + _nextUserData.pointPerTap;
+
+		_nextLevelLabel.text = "LV:" + _userData.level + "\n" + "PPT: " + _userData.pointPerTap;
 		_purchaseBtnLabel.text = "LEVEL UP!\n" + _userData.nextLevelCoin + " COIN";
 
-		_maxComboLabel.text = "MaxCombo:" + maxCombo;
-
-		_killCountLabel.text = "Kill:" + killCount;
+		//_maxComboLabel.text = "MaxCombo:" + maxCombo;
+		//_killCountLabel.text = "Kill:" + killCount;
 	}
 
 	public void purchasePlayerLevel() {
@@ -523,7 +524,7 @@ public class GameCtrl : MonoBehaviour {
 		// スコア加算
 		score += addScore;
 		_tapResultText.text = resultText;
-		_ScoreText.text = "SCORE\n"+score+"pt";
+		_ScoreText.text = "S:"+score;
 		iTween.ScaleFrom (_tapResultText.gameObject, Vector3.one * RESULT_TEXT_SCALE_AMOUNT, SCALE_TIME);
 
 		// プレイヤーのPPTの値から敵に与えるダメージを算出

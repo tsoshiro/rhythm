@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class HpCtrl : MonoBehaviour {
 	public Slider 	_hpBar;
-	public TextMesh _hpText;
+	public Text _hpText;
 
 	float maxHp;
 	float nowHp;

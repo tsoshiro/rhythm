@@ -29,16 +29,16 @@ public class PlayerCtrl : MonoBehaviour {
 
 	public void addCoin(int pCoin) {
 		coin += pCoin;
-		_coinLabel.text = "COIN:"+coin;
+		_coinLabel.text = "C:"+coin;
 	}
 
 	public void useCoin(int pCoin) {
 		coin -= pCoin;
-		_coinLabel.text = "COIN:" + coin;
+		_coinLabel.text = "C:" + coin;
 	}
 
 	public void setCoin(int pCoin) {
 		coin = pCoin;
-		_coinLabel.text = "COIN:" + coin;
+		_coinLabel.text = "C:" + coin;
 	}
 }
