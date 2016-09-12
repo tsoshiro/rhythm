@@ -90,6 +90,7 @@ public class SupporterCtrl : MonoBehaviour {
 			supportersList.Add (sp);
 
 			if (aIsReleased) {
+				setPrefab(sp.id);
 				// 解放済みサポーターのコストを更新する
 				supporterNextLevelCoin [i] = sp.nextLevelCoin;
 			}
@@ -202,9 +203,39 @@ public class SupporterCtrl : MonoBehaviour {
 		PlayerPrefsX.SetIntArray(Const.PREF_SUPPORTER_LEVELS, supportersData);
 	}
 
+	#region obj
+	public List<Vector2> _posList = new List<Vector2>();
+	public List<GameObject> _supporterPrefabs = new List<GameObject>();
+	List<GameObject> _supporterObjects = new List<GameObject>();
+
+	void setPrefab(int pSupporterId) {
+		int spCount = _supporterObjects.Count;
+
+		Vector3 pos = setPosition((int)_posList[spCount].x, (int)_posList[spCount].y);
+		GameObject go = Instantiate(_supporterPrefabs[pSupporterId - 1],
+									pos,
+									_supporterPrefabs[pSupporterId - 1].transform.localRotation) as GameObject;
+		go.transform.localScale = go.transform.localScale * 5;
+		go.name = "Supporter_" + pSupporterId;
+		_supporterObjects.Add(go);
+	}
+
+	Vector3 setPosition(int xValue, int zValue) {
+		float frontX = 0;
+		if ((zValue % 2) == 0)
+		{
+			frontX = 2;
+		}
+		float frontZ = 0;
+
+		return new Vector3(frontX * (float)xValue, 0, frontZ * (float)zValue);
+	}
+
+	#endregion
+
 	#region debug
 	public void resetSupporter() {
-		for (int i = 0; i < supportersData.Length; i++) {
+		for (int i = 0; i < supportersData.Length; i++){
 			supportersData[i] = 0;
 			setSupporterLevel(i + 1, 0);
 		}
