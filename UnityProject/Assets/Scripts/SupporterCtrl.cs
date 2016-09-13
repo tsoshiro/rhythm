@@ -89,10 +89,15 @@ public class SupporterCtrl : MonoBehaviour {
 			Debug.Log ("SP ID:" + sp.id + " NAME:"+sp.name+"PPS:"+sp.pointPerSecond);
 			supportersList.Add (sp);
 
-			if (aIsReleased) {
-				setPrefab(sp.id);
+			setPrefab(sp.id);
+
+			if (aIsReleased)
+			{
 				// 解放済みサポーターのコストを更新する
-				supporterNextLevelCoin [i] = sp.nextLevelCoin;
+				supporterNextLevelCoin[i] = sp.nextLevelCoin;
+			}
+			else {
+				_supporterObjects[sp.id - 1].SetActive(false);
 			}
 		}
 
@@ -196,6 +201,9 @@ public class SupporterCtrl : MonoBehaviour {
 		// 表記を更新
 		_scrollCtrl.updateSupportersInfo(sp);
 
+		// Prefabを出現
+		_supporterObjects[pId - 1].SetActive(true);
+
 		return true;
 	}
 
@@ -207,28 +215,31 @@ public class SupporterCtrl : MonoBehaviour {
 	public List<Vector2> _posList = new List<Vector2>();
 	public List<GameObject> _supporterPrefabs = new List<GameObject>();
 	List<GameObject> _supporterObjects = new List<GameObject>();
+	public GameObject Heroes;
 
 	void setPrefab(int pSupporterId) {
 		int spCount = _supporterObjects.Count;
 
-		Vector3 pos = setPosition((int)_posList[spCount].x, (int)_posList[spCount].y);
+		Vector3 pos = setPosition((int)_posList[spCount+1].x, (int)_posList[spCount+1].y);
 		GameObject go = Instantiate(_supporterPrefabs[pSupporterId - 1],
-									pos,
+		                            _supporterPrefabs[pSupporterId - 1].transform.localPosition,
 									_supporterPrefabs[pSupporterId - 1].transform.localRotation) as GameObject;
 		go.transform.localScale = go.transform.localScale * 5;
+		go.transform.parent = Heroes.transform;
+		go.transform.localPosition = pos;
 		go.name = "Supporter_" + pSupporterId;
 		_supporterObjects.Add(go);
 	}
 
 	Vector3 setPosition(int xValue, int zValue) {
-		float frontX = 0;
+		float frontX = 1;
 		if ((zValue % 2) == 0)
 		{
 			frontX = 2;
 		}
-		float frontZ = 0;
+		float frontZ = -1;
 
-		return new Vector3(frontX * (float)xValue, 0, frontZ * (float)zValue);
+		return new Vector3(frontX * (float)xValue, 0, frontZ * (float)zValue - 3);
 	}
 
 	#endregion
